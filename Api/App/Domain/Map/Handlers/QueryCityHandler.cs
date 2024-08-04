@@ -13,10 +13,10 @@ public class QueryCityHandler
 
         var sessionQuery = command.ProvinceId.HasValue
             ? session
-                .Query<InsertCity>()
+                .Query<City>()
                 .Where(x => x.ProvinceId == command.ProvinceId)
             : session
-                .Query<InsertCity>();
+                .Query<City>();
 
         var sessions = await sessionQuery.ToListAsync();
         return sessions.Select(p => new CityResponse()

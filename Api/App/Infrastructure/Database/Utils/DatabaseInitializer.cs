@@ -35,7 +35,7 @@ public class DatabaseInitializer(IDocumentStore store) : IHostedService
 
             session.Store(provinceEntity);
 
-            foreach (var city in province.Value.Select(cityName => new InsertCity()
+            foreach (var city in province.Value.Select(cityName => new City()
                          { Name = cityName, ProvinceId = provinceEntity.Id, Created = DateTime.UtcNow }))
             {
                 session.Store(city);

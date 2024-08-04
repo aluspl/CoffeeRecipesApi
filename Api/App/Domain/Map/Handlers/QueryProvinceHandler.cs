@@ -16,7 +16,7 @@ public class QueryProvinceHandler
             ToListAsync();
 
         var cities =await session
-            .Query<InsertCity>().
+            .Query<City>().
             ToListAsync();
         var mappedCity = cities.Select(CityResponse.FromEntity);
         

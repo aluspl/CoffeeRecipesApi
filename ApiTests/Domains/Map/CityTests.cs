@@ -7,7 +7,7 @@ using Shouldly;
 
 namespace ApiTests.Domains.Map;
 
-public class InsertCityTests : IAsyncLifetime
+public class CityTests : IAsyncLifetime
 {
     private readonly IDocumentSession _documentSession = Substitute.For<IDocumentSession>();
     private readonly Province _sampleProvince = new Province()
