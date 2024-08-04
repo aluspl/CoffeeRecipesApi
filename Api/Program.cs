@@ -1,9 +1,26 @@
-var builder = WebApplication.CreateBuilder(args);
+using Api.App.Common.Consts;
+using Api.App.Domain.Map.Module;
+using Api.App.Infrastructure.Database.Utils;
+using Api.Extensions;
+using Oakton;
+using Oakton.Resources;
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var builder = WebApplication.CreateBuilder(args);
+builder.Host.ApplyOaktonExtensions();
+builder.Services.AddHostedService<DatabaseInitializer>();
+
+var connectionString = builder.Configuration.GetConnectionString(CommonConsts.ConnectionString);
+
+// Add Wolverine to project
+builder.Host.UseWolverine();
+builder.Host.UseResourceSetupOnStartup();
+
+// Database.Infrastructure
+builder.Services.UseSwagger();
+builder.Services.UseJson();
+builder.Services.AddControllers();
+builder.Services.AddHealthChecks();
+builder.Services.UseDatabase(connectionString);
 
 var app = builder.Build();
 
@@ -15,30 +32,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseRouting();
+app.MapControllers();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// Setup Modules
+app.SetupMapModule();
 
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+app.MapHealthChecks("/healthz");
 
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+await app.RunOaktonCommands(args);
