@@ -1,4 +1,6 @@
-﻿namespace Api.App.Domain.Map.Models.Responses;
+﻿using Api.App.Domain.Map.Entities;
+
+namespace Api.App.Domain.Map.Models.Responses;
 
 public class CityResponse
 {
@@ -6,5 +8,15 @@ public class CityResponse
 
     public string Name { get; set; }
 
-    public ProvinceResponse Province { get; set; }
+    public Guid? ProvinceId { get; set; }
+
+    public static CityResponse FromEntity(City city)
+    {
+        return new CityResponse()
+        {
+            Id = city.Id,
+            Name = city.Name,
+            ProvinceId = city.ProvinceId,
+        };
+    }
 }
