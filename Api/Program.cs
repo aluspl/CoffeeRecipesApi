@@ -1,5 +1,4 @@
 using Api.App.Common.Consts;
-using Api.App.Domain.Map;
 using Api.App.Domain.Map.Module;
 using Api.App.Infrastructure.Database.Utils;
 using Api.Extensions;
