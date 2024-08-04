@@ -2,7 +2,7 @@
 
 namespace Api.App.Domain.Map.Entities;
 
-public class City : IEntity
+public class InsertCity : IEntity
 {
     public Guid Id { get; set; }
 

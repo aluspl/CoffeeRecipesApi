@@ -10,13 +10,13 @@ public class CityResponse
 
     public Guid? ProvinceId { get; set; }
 
-    public static CityResponse FromEntity(City city)
+    public static CityResponse FromEntity(InsertCity insertCity)
     {
         return new CityResponse()
         {
-            Id = city.Id,
-            Name = city.Name,
-            ProvinceId = city.ProvinceId,
+            Id = insertCity.Id,
+            Name = insertCity.Name,
+            ProvinceId = insertCity.ProvinceId,
         };
     }
 }

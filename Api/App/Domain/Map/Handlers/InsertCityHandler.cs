@@ -8,15 +8,14 @@ namespace Api.App.Domain.Map.Handlers;
 
 public class InsertCityHandler
 {
-    public static async Task<CityResponse> HandleAsync(CommandInsertCity command, IDocumentStore store)
+    public static async Task<CityResponse> HandleAsync(CommandInsertCity command, IDocumentSession session)
     {
-        await using var session = store.LightweightSession();
         var province = await session
                            .Query<Province>()
                            .Where(p => p.Id == command.ProvinceId)
                            .FirstOrDefaultAsync()
                        ?? throw new NotFoundException("Province not found");
-        var city = new City()
+        var city = new InsertCity()
         {
             ProvinceId = province.Id,
             Name = command.Name,
