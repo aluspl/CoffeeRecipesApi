@@ -2,10 +2,9 @@
 
 public static class Setup
 {
-    public static IEndpointRouteBuilder SetupMapModule(
-        this IEndpointRouteBuilder app)
+    public static IApplicationBuilder SetupMapModule(
+        this IApplicationBuilder app)
     {
-        app.MapEndpoint();
         return app;
     }
 }

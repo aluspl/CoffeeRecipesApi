@@ -28,6 +28,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapControllers();
 // Setup Modules
 app.SetupMapModule();
 await app.RunOaktonCommands(args);
