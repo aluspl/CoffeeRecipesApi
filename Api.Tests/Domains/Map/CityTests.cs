@@ -1,6 +1,7 @@
 ﻿using Alba;
 using Api.App.Domain.Map.Entities;
 using Api.App.Domain.Map.Handlers.Commands;
+using Api.App.Domain.Map.Handlers.Queries;
 using Api.App.Domain.Map.Models.Responses;
 using Api.Tests.Consts;
 using JasperFx.Core.Reflection;
@@ -26,13 +27,52 @@ public class CityTests : IntegrationContext
     {
         await SeedProvince();
         var command = new CommandInsertCity("Zywiec", ProvinceConsts.SampleProvince.Id);
+
         var tracked = await Host.InvokeMessageAndWaitAsync(command);
         var result = tracked.FindSingleTrackedMessageOfType<CityResponse>();
+
         result.ShouldNotBeNull();
         await using var nested = Host.Services.As<IContainer>().GetNestedContainer();
         var context = nested.GetInstance<IDocumentSession>();
 
         var item = await context.Query<City>().FirstOrDefaultAsync();
         item.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task Should_Query_For_City()
+    {
+        // Assert
+        await SeedProvince();
+        await SeedCity();
+        var query = new QueryCity(ProvinceConsts.SampleProvince.Id);
+
+        // Act
+        var tracked = await Host.InvokeMessageAndWaitAsync(query);
+        var messages = tracked.Sent.AllMessages();
+        var result = tracked.FindSingleTrackedMessageOfType<IEnumerable<CityResponse>>();
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldNotBeEmpty();
+
+        var city = result.FirstOrDefault();
+        city.ShouldNotBeNull();
+        city.ProvinceId.ShouldBe(ProvinceConsts.SampleProvince.Id);
+
+        var item = await Store.QuerySession().Query<City>().FirstOrDefaultAsync();
+        item.ShouldNotBeNull();
+        item.Id.ShouldBe(city.Id);
+    }
+
+    private async Task SeedCity()
+    {
+        await using var session = Store.LightweightSession();
+        session.Store(new City()
+        {
+            ProvinceId = ProvinceConsts.SampleProvince.Id,
+            Name = "Zywiec",
+        });
+        await session.SaveChangesAsync();
     }
 }

@@ -1,5 +1,3 @@
-using Api.App.Common.Configs;
-using Api.App.Common.Consts;
 using Api.App.Domain.Map.Module;
 using Api.App.Infrastructure.Database.Utils;
 using Api.Extensions;
@@ -7,9 +5,9 @@ using Oakton;
 using Oakton.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Host.ApplyOaktonExtensions();
 builder.Services.AddHostedService<DatabaseInitializer>();
-
 // Add Wolverine to project
 builder.Host.UseWolverine();
 builder.Host.UseResourceSetupOnStartup();

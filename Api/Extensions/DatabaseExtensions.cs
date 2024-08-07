@@ -1,5 +1,6 @@
 ﻿using Api.App.Common.Configs;
 using Api.App.Common.Consts;
+using Api.App.Common.Extensions;
 using Api.App.Infrastructure.Database.Entities;
 using Marten;
 using Microsoft.Extensions.Options;
@@ -16,10 +17,10 @@ public static class DatabaseExtensions
         return services;
     }
 
-    public static IServiceCollection UseDatabase(this IServiceCollection services, ConfigurationManager configurationManager)
+    public static IServiceCollection UseDatabase(this IServiceCollection services, IConfigurationManager configurationManager)
     {
         var connectionString = configurationManager.GetConnectionString(CommonConsts.ConnectionString);
-        var settings = configurationManager.Get<MartenSettings>();
+        var settings = configurationManager.GetConfig<MartenSettings>("Marten");
 
         services.AddMarten(options =>
             {

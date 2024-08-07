@@ -7,23 +7,18 @@ namespace Api.App.Domain.Map.Handlers;
 
 public class QueryCityHandler
 {
-    public static async Task<IEnumerable<CityResponse>> HandleAsync(QueryCity command, IDocumentStore store)
+    public static async Task<IEnumerable<CityResponse>> HandleAsync(QueryCity query, IDocumentStore store)
     {
         await using var session = store.QuerySession();
 
-        var sessionQuery = command.ProvinceId.HasValue
+        var sessionQuery = query.ProvinceId.HasValue
             ? session
                 .Query<City>()
-                .Where(x => x.ProvinceId == command.ProvinceId)
+                .Where(x => x.ProvinceId == query.ProvinceId)
             : session
                 .Query<City>();
 
         var sessions = await sessionQuery.ToListAsync();
-        return sessions.Select(p => new CityResponse()
-        {
-            Id = p.Id,
-            Name = p.Name,
-            ProvinceId = p.ProvinceId,
-        });
+        return sessions.Select(CityResponse.FromEntity);
     }
 }
