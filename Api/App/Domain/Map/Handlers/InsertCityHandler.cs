@@ -1,6 +1,7 @@
 ﻿using Api.App.Common.Exceptions;
 using Api.App.Domain.Map.Controllers;
 using Api.App.Domain.Map.Entities;
+using Api.App.Domain.Map.Handlers.Commands;
 using Api.App.Domain.Map.Models.Responses;
 using Marten;
 

@@ -10,10 +10,6 @@ public static class HostExtensions
         {
             // You want this maybe!
             options.Policies.AutoApplyTransactions();
-
-            // But wait! Optimize Wolverine for usage as *only*
-            // a mediator
-            options.Durability.Mode = DurabilityMode.MediatorOnly;
             options.Discovery.IncludeAssembly(typeof(Program).Assembly);
 
             options.Policies.UseDurableLocalQueues();
