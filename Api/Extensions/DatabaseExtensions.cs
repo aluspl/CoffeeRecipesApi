@@ -1,5 +1,9 @@
-﻿using Api.App.Infrastructure.Database.Entities;
+﻿using Api.App.Common.Configs;
+using Api.App.Common.Consts;
+using Api.App.Common.Extensions;
+using Api.App.Infrastructure.Database.Entities;
 using Marten;
+using Microsoft.Extensions.Options;
 using Weasel.Core;
 using Wolverine.Marten;
 using CombGuidIdGeneration = Marten.Schema.Identity.CombGuidIdGeneration;
@@ -13,9 +17,11 @@ public static class DatabaseExtensions
         return services;
     }
 
-    public static IServiceCollection UseDatabase(this IServiceCollection services,
-        string connectionString, int commandTimeout = 30)
+    public static IServiceCollection UseDatabase(this IServiceCollection services, IConfigurationManager configurationManager)
     {
+        var connectionString = configurationManager.GetConnectionString(CommonConsts.ConnectionString);
+        var settings = configurationManager.GetConfig<MartenSettings>("Marten");
+
         services.AddMarten(options =>
             {
                 // Establish the connection string to your Marten database
@@ -25,7 +31,13 @@ public static class DatabaseExtensions
                 options.UseSystemTextJsonForSerialization();
 
                 options.Schema.For<IEntity>().IdStrategy(new CombGuidIdGeneration());
+                if (!string.IsNullOrEmpty(settings.SchemaName))
+                {
+                    options.Events.DatabaseSchemaName = settings.SchemaName;
+                    options.DatabaseSchemaName = settings.SchemaName;
+                }
             })
+            .UseLightweightSessions()
             .IntegrateWithWolverine();
 
         return services;
