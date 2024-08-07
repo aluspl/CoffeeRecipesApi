@@ -48,14 +48,16 @@ public class CityTests : IntegrationContext
         var query = new QueryCity(ProvinceConsts.SampleProvince.Id);
 
         // Act
-        var tracked = await Host.InvokeMessageAndWaitAsync(query);
-        var messages = tracked.Sent.AllMessages();
-        var result = tracked.FindSingleTrackedMessageOfType<IEnumerable<CityResponse>>();
+        var tracked = await Host.InvokeMessageAndWaitAsync<IEnumerable<CityResponse>>(query);
+        var status = tracked.Item1;
+        var result = tracked.Item2;
 
         // Assert
         result.ShouldNotBeNull();
         result.ShouldNotBeEmpty();
-
+        result.Count().ShouldBe(1);
+        status.Status.ShouldBe(TrackingStatus.Completed);
+        
         var city = result.FirstOrDefault();
         city.ShouldNotBeNull();
         city.ProvinceId.ShouldBe(ProvinceConsts.SampleProvince.Id);
