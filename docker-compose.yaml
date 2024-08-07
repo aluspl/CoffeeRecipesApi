@@ -1,0 +1,37 @@
+version: '3.8'
+
+networks:
+  network:
+    name: network
+    
+services:
+  api:
+    image: coffeerecipeapi
+    build:
+      context: .
+      dockerfile: ./Api/Dockerfile
+    depends_on:
+      - db
+    container_name: utm
+    environment:
+        - ConnectionStrings__defaultConnection=Host=db;Database=coffeerecipes;Username=postgres;Password=postgres;
+        - ASPNETCORE_URLS=https://+:443;http://+:80
+        - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+        - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    ports:
+      - "5000:80"
+      - "5001:443"
+    networks:
+      - network  
+  db:
+    container_name: db_postgres
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: coffeerecipes
+    ports:
+      - "5432:5432"
+    networks:
+      - network
