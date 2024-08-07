@@ -4,12 +4,14 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-
+        <PreserveCompilationContext>true</PreserveCompilationContext>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Alba" Version="8.0.0" />
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
         <PackageReference Include="Marten" Version="7.19.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
