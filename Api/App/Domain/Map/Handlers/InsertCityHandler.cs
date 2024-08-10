@@ -4,6 +4,7 @@ using Api.App.Domain.Map.Entities;
 using Api.App.Domain.Map.Handlers.Commands;
 using Api.App.Domain.Map.Models.Responses;
 using Marten;
+using MapExtensions = Api.App.Domain.Map.Models.Responses.MapExtensions;
 
 namespace Api.App.Domain.Map.Handlers;
 
@@ -27,6 +28,6 @@ public class InsertCityHandler
         
         session.Store(city);
         await session.SaveChangesAsync();
-        return CityResponse.FromEntity(city);
+        return MapExtensions.Map(city);
     }
 }
