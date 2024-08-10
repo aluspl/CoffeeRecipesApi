@@ -1,4 +1,5 @@
 ﻿using Alba;
+using Api.App.Domain.Map.Entities;
 using Api.Tests.Consts;
 using Marten;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,10 +31,29 @@ public abstract class IntegrationContext : IAsyncLifetime
         return Task.CompletedTask;
     }
     
-    protected async Task SeedProvince()
+    protected async Task<Province> SeedProvince()
     {
         await using var documentSession = Store.LightweightSession();
-        documentSession.Store(ProvinceConsts.SampleProvince);
+        var entity = new Province()
+        {
+            Name = ProvinceConsts.SampleProvince.Name,
+        };
+        
+        documentSession.Store(entity);
         await documentSession.SaveChangesAsync();
+        return entity;
+    }
+    
+    protected async Task<City> SeedCity(Guid provinceId)
+    {
+        await using var session = Store.LightweightSession();
+        var entity = new City()
+        {
+            ProvinceId = provinceId,
+            Name = ProvinceConsts.SampleCity.Name,
+        };
+        session.Store(entity);
+        await session.SaveChangesAsync();
+        return entity;
     }
 }

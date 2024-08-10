@@ -13,7 +13,7 @@ public class ProvinceController(IMessageBus bus) : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<ProvinceResponse>), 200)]
     public async Task<ActionResult<IEnumerable<ProvinceResponse>>> GetProvinces()
     {
-        var provinces = await bus.InvokeAsync<IEnumerable<ProvinceResponse>>(new QueryProvince());
+        var provinces = await bus.InvokeAsync<IEnumerable<ProvinceResponse>>(new QueryProvinceList());
         return Ok(provinces);
     }
 }
