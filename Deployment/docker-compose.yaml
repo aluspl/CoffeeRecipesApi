@@ -9,12 +9,15 @@ services:
     container_name: proxy
     image: nginx:alpine
     ports:
+      - "80:80"
       - "443:443"
     volumes:
       - ./frontend:/var/www/html
       - ./nginx:/etc/nginx
     networks:
       - network
+    depends_on:
+      - api
   db:
     container_name: db_postgres
     image: postgres
@@ -33,10 +36,10 @@ services:
     container_name: api
     image: aluspl/coffeerecipesapi:develop
     ports:
-      - "420:443"
+      - "180:80"
+      - "1443:443"
     environment:
       ConnectionStrings__Marten: Host=db;Database=coffeerecipes;Username=postgres;Password=postgres;
-      ASPNETCORE_URLS: https://+:430
     networks:
       - network
     depends_on:
