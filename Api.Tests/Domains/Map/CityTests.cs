@@ -1,5 +1,4 @@
-﻿using Alba;
-using Api.App.Domain.Map.Entities;
+﻿using Api.App.Domain.Map.Entities;
 using Api.App.Domain.Map.Handlers.Commands;
 using Api.App.Domain.Map.Handlers.Queries;
 using Api.App.Domain.Map.Models.Responses;
@@ -13,20 +12,13 @@ using Wolverine.Tracking;
 namespace Api.Tests.Domains.Map;
 
 [Collection("integration")]
-public class CityTests : IntegrationContext
+public class CityTests(AppFixture fixture) : IntegrationContext(fixture)
 {
-    private readonly IAlbaHost theHost;
-
-    public CityTests(AppFixture fixture) : base(fixture)
-    {
-        theHost = fixture.Host;
-    }
-
     [Fact]
     public async Task Should_Add_City_To_Selected_Province()
     {
-        await SeedProvince();
-        var command = new CommandInsertCity("Zywiec", ProvinceConsts.SampleProvince.Id);
+        var province = await SeedProvince();
+        var command = new CommandInsertCity(ProvinceConsts.SampleCity.Name, province.Id);
 
         var tracked = await Host.InvokeMessageAndWaitAsync(command);
         var result = tracked.FindSingleTrackedMessageOfType<CityResponse>();
@@ -43,9 +35,9 @@ public class CityTests : IntegrationContext
     public async Task Should_Query_For_City()
     {
         // Assert
-        await SeedProvince();
-        await SeedCity();
-        var query = new QueryCity(ProvinceConsts.SampleProvince.Id);
+        var province = await SeedProvince();
+        var city = await SeedCity(province.Id);
+        var query = new QueryCityList(province.Id);
 
         // Act
         var tracked = await Host.InvokeMessageAndWaitAsync<IEnumerable<CityResponse>>(query);
@@ -58,23 +50,17 @@ public class CityTests : IntegrationContext
         result.Count().ShouldBe(1);
         status.Status.ShouldBe(TrackingStatus.Completed);
         
-        var city = result.FirstOrDefault();
-        city.ShouldNotBeNull();
-        city.ProvinceId.ShouldBe(ProvinceConsts.SampleProvince.Id);
-
+        var cityResponse = result.FirstOrDefault();
+        cityResponse.ShouldNotBeNull();
+        cityResponse.ProvinceId.ShouldBe(province.Id);
+        cityResponse.Id.ShouldBe(city.Id);
+        cityResponse.Name.ShouldBe(city.Name);
+        
         var item = await Store.QuerySession().Query<City>().FirstOrDefaultAsync();
         item.ShouldNotBeNull();
         item.Id.ShouldBe(city.Id);
-    }
-
-    private async Task SeedCity()
-    {
-        await using var session = Store.LightweightSession();
-        session.Store(new City()
-        {
-            ProvinceId = ProvinceConsts.SampleProvince.Id,
-            Name = "Zywiec",
-        });
-        await session.SaveChangesAsync();
+        item.Id.ShouldBe(cityResponse.Id);
+        item.Name.ShouldBe(city.Name);
+        item.Name.ShouldBe(cityResponse.Name);
     }
 }

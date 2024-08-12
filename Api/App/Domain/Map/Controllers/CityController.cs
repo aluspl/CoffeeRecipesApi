@@ -16,7 +16,7 @@ public class CityController(IMessageBus bus) : ApiController
     [ProducesResponseType(typeof(IEnumerable<CityResponse>), 200)]
     public async Task<ActionResult<IEnumerable<CityResponse>>> GetCities()
     {
-        var cities = await bus.InvokeAsync<IEnumerable<CityResponse>>(new QueryCity(null));
+        var cities = await bus.InvokeAsync<IEnumerable<CityResponse>>(new QueryCityList(null));
         return Ok(cities);
     }
 
@@ -29,7 +29,7 @@ public class CityController(IMessageBus bus) : ApiController
             return BadRequest("Invalid province ID");
         }
 
-        var cities = await bus.InvokeAsync<IEnumerable<CityResponse>>(new QueryCity(provinceId));
+        var cities = await bus.InvokeAsync<IEnumerable<CityResponse>>(new QueryCityList(provinceId));
         return Ok(cities);
     }
     
