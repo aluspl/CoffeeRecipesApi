@@ -11,7 +11,7 @@ on:
     # Publish semver tags as releases.
 env:
   # github.repository as <account>/<repo>
-  IMAGE_NAME: aluspl/coffeerecipes-api
+  IMAGE_NAME: ${{ github.repository }}
 
 
 jobs:
