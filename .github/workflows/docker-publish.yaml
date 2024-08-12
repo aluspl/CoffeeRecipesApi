@@ -7,11 +7,11 @@ name: Publish Docker Image
 
 on:
   push:
-    branches: [ "dev", "main" ]
+    branches: [ "develop", "main" ]
     # Publish semver tags as releases.
 env:
   # github.repository as <account>/<repo>
-  IMAGE_NAME: lifelikepl\coffeerecipes-api
+  IMAGE_NAME: aluspl/coffeerecipes-api
 
 
 jobs:
