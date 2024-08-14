@@ -8,12 +8,14 @@ services:
   web:
     container_name: proxy
     image: nginx:alpine
+    restart: always
     ports:
-      - "80:80"
+      #        - "80:80"
       - "443:443"
     volumes:
       - ./frontend:/var/www/html
       - ./nginx:/etc/nginx
+      - ./certbot:/etc/letsencrypt
     networks:
       - network
     depends_on:
@@ -36,11 +38,21 @@ services:
     container_name: api
     image: aluspl/coffeerecipesapi:develop
     ports:
-      - "180:8080"
-      - "1443:443"
+      - "80:80"
     environment:
       ConnectionStrings__Marten: Host=db;Database=coffeerecipes;Username=postgres;Password=postgres;
+      ASPNETCORE_URLS: "http://*:80"
     networks:
       - network
     depends_on:
       - db
+    volumes:
+      - ./https:/https:ro
+#  certbot:
+#    image: certbot/certbot
+#    volumes:
+#      - ./frontend:/var/www/html
+#      - ./certbot:/etc/letsencrypt
+#    depends_on:
+#      - web
+#    command: certonly --webroot --webroot-path=/var/www/html --email szymon@lifelike.pl --agree-tos --no-eff-email --staging -d dev-recipes.lifelike.pl -d www.dev-recipes.lifelike.pl
