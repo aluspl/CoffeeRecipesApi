@@ -36,7 +36,7 @@ services:
     container_name: api
     image: aluspl/coffeerecipesapi:develop
     ports:
-      - "180:80"
+      - "180:8080"
       - "1443:443"
     environment:
       ConnectionStrings__Marten: Host=db;Database=coffeerecipes;Username=postgres;Password=postgres;
