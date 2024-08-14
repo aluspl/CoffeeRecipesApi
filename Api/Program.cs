@@ -9,7 +9,7 @@ using Serilog.Events;
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Information)
     .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Information)
-    .MinimumLevel.Override("Npgsql", LogEventLevel.Debug)
+    .MinimumLevel.Override("Npgsql", LogEventLevel.Error)
     .WriteTo.Console()
     .Enrich.FromLogContext()
     .CreateLogger();
