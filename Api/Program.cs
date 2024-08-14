@@ -38,7 +38,6 @@ try
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    app.UseHttpsRedirection();
     app.UseRouting();
     app.MapControllers();
 
