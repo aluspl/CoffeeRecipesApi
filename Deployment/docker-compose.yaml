@@ -1,0 +1,46 @@
+version: '3.8'
+
+networks:
+  network:
+    name: network
+
+services:
+  web:
+    container_name: proxy
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend:/var/www/html
+      - ./nginx:/etc/nginx
+    networks:
+      - network
+    depends_on:
+      - api
+  db:
+    container_name: db_postgres
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: coffeerecipes
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - network
+  api:
+    container_name: api
+    image: aluspl/coffeerecipesapi:develop
+    ports:
+      - "180:8080"
+      - "1443:443"
+    environment:
+      ConnectionStrings__Marten: Host=db;Database=coffeerecipes;Username=postgres;Password=postgres;
+    networks:
+      - network
+    depends_on:
+      - db
