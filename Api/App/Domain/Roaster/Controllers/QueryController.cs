@@ -1,5 +1,4 @@
 ﻿using Api.App.Common.Controller;
-using Api.App.Domain.Map.Handlers.Queries;
 using Api.App.Domain.Map.Models.Responses;
 using Api.App.Domain.Roaster.Handlers.Queries;
 using Api.App.Domain.Roaster.Models;
@@ -10,7 +9,7 @@ namespace Api.App.Domain.Roaster.Controllers;
 
 [Area("Roasters")]
 [Route("[area]/[controller]")]
-public class QueryController(IMessageBus bus) : ApiController
+public class QueryController(IMessageBus bus) : ApiKeyController
 {
     [HttpGet("all")]
     [ProducesResponseType(typeof(IEnumerable<CoffeeRoasterResponse>), 200)]
@@ -41,5 +40,3 @@ public class QueryController(IMessageBus bus) : ApiController
         return Ok(cities);
     }
 }
-
-public record QueryRoasterDetail(Guid RoasterId);

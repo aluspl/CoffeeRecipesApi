@@ -1,6 +1,6 @@
 @CoffeeRecipes_HostAddress = http://localhost:5235
-### Get Cities
-GET {{CoffeeRecipes_HostAddress}}/Map/City/
+### Get Roasters
+GET {{CoffeeRecipes_HostAddress}}/Roasters//
 Accept: application/json
 
 ### Get Cities by Province

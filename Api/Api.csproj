@@ -26,4 +26,7 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Api.Tests" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App\Domain\Security\Services\" />
+  </ItemGroup>
 </Project>
