@@ -20,6 +20,7 @@ public class CommandUpdateCoffeeRoasterHandler
         if (!command.Name.IsNullOrEmpty())
         {
             entity.Name = command.Name;
+            entity.Updated = DateTime.UtcNow;
         }
         session.Store(entity);
         await session.SaveChangesAsync();

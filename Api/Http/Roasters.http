@@ -20,7 +20,7 @@ Content-Type: application/json
 X-ApiKey: {{ApiKey}}
 
 {
-  "Name": "Popeje Roaster",
+  "Name": "Test Roaster",
   "CityId": "{{CityId}}",
   "Founded": "2024-01-01"
 }

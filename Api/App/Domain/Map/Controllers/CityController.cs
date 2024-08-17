@@ -1,4 +1,5 @@
 ﻿using Api.App.Common.Controller;
+using Api.App.Common.Extensions;
 using Api.App.Domain.Map.Handlers.Commands;
 using Api.App.Domain.Map.Handlers.Queries;
 using Api.App.Domain.Map.Models.Request;
@@ -17,7 +18,7 @@ public class CityController(IMessageBus bus) : ApiController
     [ProducesResponseType(typeof(IEnumerable<CityResponse>), 200)]
     public async Task<ActionResult<IEnumerable<CityResponse>>> GetCities()
     {
-        var cities = await bus.InvokeAsync<IEnumerable<CityResponse>>(new QueryCityList(null));
+        var cities = await bus.InvokeAsync<IEnumerable<CityResponse>>(new QueryCityList(null, null));
         return Ok(cities);
     }
 
@@ -30,7 +31,20 @@ public class CityController(IMessageBus bus) : ApiController
             return BadRequest("Invalid province ID");
         }
 
-        var cities = await bus.InvokeAsync<IEnumerable<CityResponse>>(new QueryCityList(provinceId));
+        var cities = await bus.InvokeAsync<IEnumerable<CityResponse>>(new QueryCityList(provinceId, null));
+        return Ok(cities);
+    }
+    
+    [HttpGet("search/{name}")]
+    [ProducesResponseType(typeof(IEnumerable<CityResponse>), 200)]
+    public async Task<ActionResult<IEnumerable<CityResponse>>> GetCitiesByProvinceId(string name)
+    {
+        if (name.IsNullOrEmpty())
+        {
+            return BadRequest("Invalid City Name");
+        }
+
+        var cities = await bus.InvokeAsync<IEnumerable<CityResponse>>(new QueryCityList(null, name));
         return Ok(cities);
     }
     

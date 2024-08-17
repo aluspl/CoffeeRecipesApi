@@ -18,7 +18,7 @@ public class QueryRoasterTests(AppFixture fixture) : IntegrationContext(fixture)
         var city = await SeedCity(province.Id);
         var roaster = await SeedRoaster(city.Id);
         
-        var query = new QueryRoasterList(null, false);
+        var query = new QueryRoasterList(null, null, false);
 
         // Act
         var tracked = await Host.InvokeMessageAndWaitAsync<IEnumerable<CoffeeRoasterResponse>>(query);
@@ -52,7 +52,41 @@ public class QueryRoasterTests(AppFixture fixture) : IntegrationContext(fixture)
         var city = await SeedCity(province.Id);
         var roaster = await SeedRoaster(city.Id);
         
-        var query = new QueryRoasterList(city.Id, false);
+        var query = new QueryRoasterList(city.Id, null, false);
+
+        // Act
+        var tracked = await Host.InvokeMessageAndWaitAsync<IEnumerable<CoffeeRoasterResponse>>(query);
+        var status = tracked.Item1;
+        var result = tracked.Item2;
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldNotBeEmpty();
+        result.Count().ShouldBe(1);
+        status.Status.ShouldBe(TrackingStatus.Completed);
+        
+        var roasterResponse = result.FirstOrDefault();
+        roasterResponse.ShouldNotBeNull();
+        roasterResponse.CityId.ShouldBe(city.Id);
+        roasterResponse.Name.ShouldBe(roaster.Name);
+        roasterResponse.Founded.ShouldBe(roaster.Founded);
+        roasterResponse.Urls.ShouldBe(roaster.Urls);
+        
+        var item = await Store.QuerySession().Query<CoffeeRoaster>().FirstOrDefaultAsync();
+        item.ShouldNotBeNull();
+        item.Id.ShouldBe(roaster.Id);
+        item.Id.ShouldBe(roasterResponse.Id);
+    }
+    
+    [Fact]
+    public async Task Should_Query_Roasters_By_Name()
+    {
+        // Assert
+        var province = await SeedProvince();
+        var city = await SeedCity(province.Id);
+        var roaster = await SeedRoaster(city.Id);
+        
+        var query = new QueryRoasterList(city.Id, roaster.Name, false);
 
         // Act
         var tracked = await Host.InvokeMessageAndWaitAsync<IEnumerable<CoffeeRoasterResponse>>(query);

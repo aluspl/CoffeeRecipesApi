@@ -1,4 +1,6 @@
-﻿using Api.App.Domain.Map.Handlers.Queries;
+﻿using Api.App.Common.Extensions;
+using Api.App.Domain.Map.Entities;
+using Api.App.Domain.Map.Handlers.Queries;
 using Api.App.Domain.Map.Models.Responses;
 using Marten;
 using MapExtensions = Api.App.Domain.Map.Models.Responses.MapExtensions;
@@ -11,14 +13,29 @@ public class QueryCityHandler
     {
         await using var session = store.QuerySession();
 
-        var sessionQuery = query.ProvinceId.HasValue
-            ? session
-                .Query<Entities.City>()
-                .Where(x => x.ProvinceId == query.ProvinceId)
-            : session
-                .Query<Entities.City>();
+        var sessionQuery = SessionQuery(query, session);
 
         var sessions = await sessionQuery.ToListAsync();
         return sessions.Select(MapExtensions.Map);
+    }
+
+    private static IQueryable<City> SessionQuery(QueryCityList query, IQuerySession session)
+    {
+        IQueryable<City> queryable = session.Query<City>();
+        if (query.Name.IsNullOrEmpty())
+        {
+            queryable = session
+                .Query<Entities.City>()
+                .Where(x => x.Name.Contains(query.Name));
+        }
+
+        if (query.ProvinceId.HasValue)
+        {
+            queryable = session
+                .Query<Entities.City>()
+                .Where(x => x.ProvinceId == query.ProvinceId);
+        }
+        
+        return queryable;
     }
 }
