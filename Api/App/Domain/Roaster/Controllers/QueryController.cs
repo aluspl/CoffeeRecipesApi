@@ -41,7 +41,7 @@ public class QueryController(IMessageBus bus) : ApiController
     {
         if (roasterId == Guid.Empty)
         {
-            return BadRequest("Invalid province ID");
+            return BadRequest("Invalid roaster ID");
         }
 
         var cities = await bus.InvokeAsync<CoffeeRoasterResponse>(new QueryRoasterDetail(roasterId));
