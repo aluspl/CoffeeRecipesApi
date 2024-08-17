@@ -1,6 +1,6 @@
-﻿using Api.App.Domain.Roaster.Entities;
+﻿using Api.App.Common.Exceptions;
+using Api.App.Domain.Roaster.Entities;
 using Api.App.Domain.Roaster.Handlers.Commands;
-using Api.App.Domain.Roaster.Handlers.Queries;
 using Api.App.Domain.Roaster.Models;
 using Marten;
 using Shouldly;
@@ -9,7 +9,7 @@ using Wolverine.Tracking;
 namespace Api.Tests.Domains.Roaster;
 
 [Collection("integration")]
-public class CommandRoasterTests(AppFixture fixture) : IntegrationContext(fixture)
+public class CommandCreateRoasterTests(AppFixture fixture) : IntegrationContext(fixture)
 {
     [Fact]
     public async Task Should_Add_Roaster()
@@ -37,5 +37,34 @@ public class CommandRoasterTests(AppFixture fixture) : IntegrationContext(fixtur
         var item = await Store.QuerySession().Query<CoffeeRoaster>().FirstOrDefaultAsync();
         item.ShouldNotBeNull();
         item.Id.ShouldBe(result.Id);
+    }
+    
+    [Fact]
+    public async Task Should_Not_Add_Roaster_When_City_Not_Exists()
+    {
+        // Assert
+        var founded = DateTime.Now;
+        var command = new CommandCreateCoffeeRoaster("Pope Roaster", Guid.NewGuid(), founded);
+
+        // Act
+        await Assert.ThrowsAsync<NotFoundException>(async () => await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(command));
+    }
+    
+    private async Task<CoffeeRoaster> SeedRoaster(Guid cityId)
+    {
+        await using var session = Store.LightweightSession();
+        var entity = new CoffeeRoaster()
+        {
+            CityId = cityId,
+            Name = "Pope Roaster",
+            Urls = new List<Uri>()
+            {
+                new Uri("https://2137.it"),
+                new Uri("https://vatican.it")
+            }
+        };
+        session.Store(entity);
+        await session.SaveChangesAsync();
+        return entity;
     }
 }

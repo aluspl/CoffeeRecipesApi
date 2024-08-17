@@ -9,7 +9,7 @@ namespace Api.App.Domain.Roaster.Controllers;
 
 [Area("Roasters")]
 [Route("[area]/[controller]")]
-public class QueryController(IMessageBus bus) : ApiKeyController
+public class QueryController(IMessageBus bus) : ApiController
 {
     [HttpGet("all")]
     [ProducesResponseType(typeof(IEnumerable<CoffeeRoasterResponse>), 200)]

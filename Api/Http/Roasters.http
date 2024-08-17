@@ -1,12 +1,26 @@
-@CoffeeRecipes_HostAddress = http://localhost:5235
-### Get Roasters
-GET {{CoffeeRecipes_HostAddress}}/Roasters//
+@CoffeeRecipes_HostAddress = {{Host}}
+### Get All Roasters
+GET {{CoffeeRecipes_HostAddress}}/Roasters/Query/all
 Accept: application/json
+Content-Type: application/json
+### Get Roasters by City
+GET {{CoffeeRecipes_HostAddress}}/Roasters/Query/city/{{CityId}}
+Accept: application/json
+Content-Type: application/json
 
-### Get Cities by Province
-GET {{CoffeeRecipes_HostAddress}}/Map/City/
+### Get Roaster Details
+GET {{CoffeeRecipes_HostAddress}}/Roasters/Query/details/{{RoasterId}}
 Accept: application/json
+Content-Type: application/json
 
-### Get Provinces
-GET {{CoffeeRecipes_HostAddress}}/Map/Province
+### Add Roaster
+POST {{CoffeeRecipes_HostAddress}}/Roasters/Configure
 Accept: application/json
+Content-Type: application/json
+X-ApiKey: 2137
+
+{
+  "Name": "Popeje Roaster",
+  "CityId": {{CityId}},
+  "Founded": "2024-08-17T07:48:37.260Z"
+}

@@ -16,10 +16,11 @@ public class ApiKeyValidatorTests(AppFixture fixture) : IntegrationContext(fixtu
         var query = new QueryApiKey(key);
         
         // Act
-        var tracked = await Host.InvokeMessageAndWaitAsync<bool>(query);
+        var tracked = await Host.InvokeMessageAndWaitAsync<ApiKeyChecked>(query);
         
         // Assert
         var result = tracked.Item2;
-        result.ShouldBe(expected);
+        result.ShouldNotBeNull();
+        result.HasAccess.ShouldBe(expected);
     }
 }

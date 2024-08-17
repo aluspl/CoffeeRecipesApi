@@ -13,12 +13,12 @@ public class ApiKeyAuthFilter(IMessageBus messageBus) : IAsyncAuthorizationFilte
         string userApiKey = context.HttpContext.Request.Headers[ApiKeyConstants.ApiKeyHeaderName].ToString();
         if (string.IsNullOrWhiteSpace(userApiKey))
         {
-            context.Result = new BadRequestResult();
+            context.Result = new UnauthorizedResult();
             return;
         }
 
-        var value = await messageBus.InvokeAsync<bool>(new QueryApiKey(userApiKey));
-        if (!value)
+        var value = await messageBus.InvokeAsync<ApiKeyChecked>(new QueryApiKey(userApiKey));
+        if (!value.HasAccess)
         {
             context.Result = new UnauthorizedResult();
         }

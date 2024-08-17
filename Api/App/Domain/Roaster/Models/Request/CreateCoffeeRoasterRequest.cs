@@ -1,6 +1,6 @@
 namespace Api.App.Domain.Roaster.Models.Request;
 
-public class CoffeeRoasterRequest
+public class CreateCoffeeRoasterRequest
 {
     public Guid CityId { get; set; }
 
