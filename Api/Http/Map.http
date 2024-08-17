@@ -1,7 +1,28 @@
-@CoffeeRecipes_HostAddress = http://localhost:5235
+@CoffeeRecipes_HostAddress = {{Host}}
+
 ### Get Cities
 GET {{CoffeeRecipes_HostAddress}}/Map/City/
 Accept: application/json
+
+### Insert Cities
+POST {{CoffeeRecipes_HostAddress}}/Map/City/
+Accept: application/json
+Content-Type: application/json
+X-ApiKey: {{ApiKey}}
+
+{
+  "ProvinceId": "{{ProvinceId}}",
+  "Name": "Wado-vice"
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.id === null, "Response id is not null");
+
+    });
+    client.global.set("CityId", response.body.id)
+%}
 
 ### Get Cities by Province
 GET {{CoffeeRecipes_HostAddress}}/Map/City/
@@ -10,3 +31,4 @@ Accept: application/json
 ### Get Provinces
 GET {{CoffeeRecipes_HostAddress}}/Map/Province
 Accept: application/json
+

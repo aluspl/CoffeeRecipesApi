@@ -28,6 +28,6 @@ public class InsertCityHandler
         
         session.Store(city);
         await session.SaveChangesAsync();
-        return MapExtensions.Map(city);
+        return city.Map();
     }
 }

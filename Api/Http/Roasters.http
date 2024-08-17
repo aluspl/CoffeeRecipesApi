@@ -14,13 +14,21 @@ Accept: application/json
 Content-Type: application/json
 
 ### Add Roaster
-POST {{CoffeeRecipes_HostAddress}}/Roasters/Configure
+POST {{CoffeeRecipes_HostAddress}}/Roasters/Crud
 Accept: application/json
 Content-Type: application/json
-X-ApiKey: 2137
+X-ApiKey: {{ApiKey}}
 
 {
   "Name": "Popeje Roaster",
-  "CityId": {{CityId}},
-  "Founded": "2024-08-17T07:48:37.260Z"
+  "CityId": "{{CityId}}",
+  "Founded": "2024-01-01"
 }
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.global.set("RoasterId", response.body.id)
+%}

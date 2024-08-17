@@ -27,8 +27,8 @@ try
 
     builder.Services.AddSerilog();
     builder.Services.UseSwagger();
+    builder.Services.AddControllers().AddNewtonsoftJson();
     builder.Services.UseJson();
-    builder.Services.AddControllers();
     builder.Services.AddHealthChecks();
     builder.Services.UseDatabase(builder.Configuration);
 
