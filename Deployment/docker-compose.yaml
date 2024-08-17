@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 networks:
   network:
@@ -8,39 +8,43 @@ services:
   web:
     container_name: proxy
     image: nginx:alpine
+    restart: always
     ports:
-      - "80:80"
+     # - "80:80"
       - "443:443"
     volumes:
-      - ./frontend:/var/www/html
+      - ./certbot/www:/var/www/html:ro
       - ./nginx:/etc/nginx
+      - ./certbot:/etc/letsencrypt
     networks:
       - network
     depends_on:
       - api
-  db:
-    container_name: db_postgres
-    image: postgres
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: coffeerecipes
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./db:/var/lib/postgresql/data
-    networks:
-      - network
+  #  db:
+  #    container_name: db_postgres
+  #    image: postgres
+  #    restart: always
+  #    environment:
+  #        POSTGRES_USER: postgres
+  #        POSTGRES_PASSWORD: postgres
+  #        POSTGRES_DB: coffeerecipes
+  #    ports:
+  #        - "5432:5432"
+  #    volumes:
+  #        - ./db:/var/lib/postgresql/data
+  #    networks:
+  #      - network
   api:
     container_name: api
     image: aluspl/coffeerecipesapi:develop
     ports:
-      - "180:8080"
-      - "1443:443"
+      - "80:80"
     environment:
-      ConnectionStrings__Marten: Host=db;Database=coffeerecipes;Username=postgres;Password=postgres;
+      ConnectionStrings__Marten: Host=aluspl.synology.me;Port=6432;Database=coffeerecipes;Username=postgres;Password=NieDlaPsaKielbasa;
+      ASPNETCORE_URLS: "http://*:80"
     networks:
       - network
-    depends_on:
-      - db
+    #    depends_on:
+    #      - db
+    volumes:
+      - ./https:/https:ro

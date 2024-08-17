@@ -3,6 +3,7 @@ using Api.App.Domain.Map.Handlers.Commands;
 using Api.App.Domain.Map.Handlers.Queries;
 using Api.App.Domain.Map.Models.Request;
 using Api.App.Domain.Map.Models.Responses;
+using Api.App.Domain.Security.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using Wolverine;
 
@@ -35,6 +36,7 @@ public class CityController(IMessageBus bus) : ApiController
     
     [HttpPost]
     [ProducesResponseType(typeof(CityResponse), 200)]
+    [ApiKey]
     public async Task<ActionResult<CityResponse>> Insert(CityRequest city)
     {
         if (city.ProvinceId == Guid.Empty)

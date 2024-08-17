@@ -1,4 +1,9 @@
-﻿namespace Api.Extensions;
+﻿using System.ComponentModel;
+using Api.App.Common.Converters;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Converters;
+
+namespace Api.Extensions;
 
 public static class ServiceExtensions
 {
@@ -17,13 +22,9 @@ public static class ServiceExtensions
 
     public static IServiceCollection UseJson(this IServiceCollection services)
     {
-        services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+        services.Configure<MvcNewtonsoftJsonOptions>(options =>
         {
-            options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-        });
-        services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
-        {
-            options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+            options.SerializerSettings.Converters.Add(new StringEnumConverter());
         });
         return services;
     }
