@@ -31,13 +31,13 @@ try
     builder.Services.AddControllers().AddNewtonsoftJson();
     builder.Services.UseJson();
     builder.Services.AddHealthChecks();
-
+    builder.Services.AddCors();
     var app = builder.Build();
 
 // Configure the HTTP request pipeline.
     app.UseSwagger();
     app.UseSwaggerUI();
-
+    app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin());
     app.UseRouting();
     app.MapControllers();
 
