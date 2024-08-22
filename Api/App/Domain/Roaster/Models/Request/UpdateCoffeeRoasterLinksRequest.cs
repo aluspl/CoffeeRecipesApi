@@ -1,7 +1,8 @@
 namespace Api.App.Domain.Roaster.Models.Request;
 
-public class UpdateCoffeeRoasterRequest
+public class UpdateCoffeeRoasterNameRequest
 {
+    public Guid Id { get; set; }
+
     public string Name { get; set; }
-    public Guid CityId { get; set; }
 }

@@ -20,11 +20,38 @@ public class CrudController(IMessageBus bus) : ApiKeyController
         return Ok(responses);
     }
     
-    [HttpPut("{coffeeRoasterId}")]
+    [HttpPost("many")]
     [ProducesResponseType(typeof(CoffeeRoasterResponse), 200)]
-    public async Task<ActionResult<CoffeeRoasterResponse>> Update([FromRoute] Guid coffeeRoasterId, [FromBody] UpdateCoffeeRoasterRequest request)
+    public async Task<ActionResult> CreateMany([FromBody] ICollection<CreateCoffeeRoasterRequest> request)
     {
-        var responses = await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandUpdateCoffeeRoaster(coffeeRoasterId, request.Name, request.CityId));
+        foreach (var roasterRequest in request)
+        {
+            await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandCreateCoffeeRoaster(roasterRequest.Name, roasterRequest.CityId, roasterRequest.Founded));
+        }
+        return Ok();
+    }
+    
+    [HttpPut("name")]
+    [ProducesResponseType(typeof(CoffeeRoasterResponse), 200)]
+    public async Task<ActionResult<CoffeeRoasterResponse>> UpdateName([FromBody] UpdateCoffeeRoasterNameRequest request)
+    {
+        var responses = await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandUpdateRoasterName(request.Id, request.Name));
+        return Ok(responses);
+    }
+    
+    [HttpPut("city")]
+    [ProducesResponseType(typeof(CoffeeRoasterResponse), 200)]
+    public async Task<ActionResult<CoffeeRoasterResponse>> UpdateCity([FromBody] UpdateCoffeeRoasterCityRequest request)
+    {
+        var responses = await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandUpdateRoasterCity(request.Id, request.CityId));
+        return Ok(responses);
+    }
+    
+    [HttpPut("links")]
+    [ProducesResponseType(typeof(CoffeeRoasterResponse), 200)]
+    public async Task<ActionResult<CoffeeRoasterResponse>> UpdateLinks([FromBody] UpdateCoffeeRoasterLinksRequest request)
+    {
+        var responses = await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandUpdateRoasterLinks(request.Id, request.Urls));
         return Ok(responses);
     }
 }

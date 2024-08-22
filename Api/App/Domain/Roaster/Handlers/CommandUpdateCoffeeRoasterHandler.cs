@@ -1,31 +1,63 @@
 using Api.App.Common.Exceptions;
-using Api.App.Common.Extensions;
 using Api.App.Domain.Map.Entities;
 using Api.App.Domain.Roaster.Entities;
 using Api.App.Domain.Roaster.Extensions;
 using Api.App.Domain.Roaster.Handlers.Commands;
 using Api.App.Domain.Roaster.Models;
 using Marten;
+using Wolverine.Attributes;
 
 namespace Api.App.Domain.Roaster.Handlers;
 
+[WolverineHandler]
 public class CommandUpdateCoffeeRoasterHandler
 {
-    public static async Task<CoffeeRoasterResponse> HandleAsync(CommandUpdateCoffeeRoaster command, IDocumentStore store)
+    public static async Task<CoffeeRoasterResponse> HandleAsync(CommandUpdateRoasterCity command, IDocumentSession session)
     {
-        await using var session = store.LightweightSession();
-        var entity = await session.Query<CoffeeRoaster>().Where(roaster => roaster.Id == command.Id).FirstOrDefaultAsync();
+        var entity = await GetCoffeeRoaster(command.Id, session);
+
         await ValidateAndUpdateCity(command.CityId, session, entity);
 
-        if (!command.Name.IsNullOrEmpty())
-        {
-            entity.Name = command.Name;
-            entity.Updated = DateTime.UtcNow;
-        }
         session.Store(entity);
         await session.SaveChangesAsync();
         
         return entity.Map();
+    }
+
+    public static async Task<CoffeeRoasterResponse> HandleAsync(CommandUpdateRoasterName command, IDocumentSession session)
+    {
+        if (await session.Query<CoffeeRoaster>().Where(o => o.Name == command.Name && o.Id != command.Id).AnyAsync())
+        {
+            throw new BusinessException("Another Coffee Roaster with selected name already exists");
+        }
+        
+        var entity = await GetCoffeeRoaster(command.Id, session);
+
+        entity.Name = command.Name;
+        session.Store(entity);
+        await session.SaveChangesAsync();
+        
+        return entity.Map();
+    }
+
+    public static async Task<CoffeeRoasterResponse> HandleAsync(CommandUpdateRoasterLinks command,
+        IDocumentSession session)
+    {
+        var entity = await GetCoffeeRoaster(command.Id, session);
+        entity.Urls = command.Urls.Select(p => new Uri(p));
+        session.Store(entity);
+        await session.SaveChangesAsync();
+
+        return entity.Map();
+    }
+    
+    private static async Task<CoffeeRoaster> GetCoffeeRoaster(Guid id, IDocumentSession session)
+    {
+        var entity = await session
+            .Query<CoffeeRoaster>()
+            .Where(roaster => roaster.Id == id)
+            .FirstOrDefaultAsync() ?? throw new NotFoundException($"Coffee Roaster {id} not found");
+        return entity;
     }
 
     private static async Task ValidateAndUpdateCity(Guid? cityId, IDocumentSession session, CoffeeRoaster entity)

@@ -13,7 +13,6 @@ public static class HostExtensions
             // You want this maybe!
             options.Policies.AutoApplyTransactions();
             options.Policies.UseDurableLocalQueues();
-            options.Discovery.IncludeAssembly(typeof(Program).Assembly);
             // Turn off all logging of the message execution starting and finishing
             // The default is Debug
             options.Policies.MessageExecutionLogLevel(LogLevel.None);
