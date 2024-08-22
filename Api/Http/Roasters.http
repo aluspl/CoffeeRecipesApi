@@ -32,3 +32,21 @@ X-ApiKey: {{ApiKey}}
 
     client.global.set("RoasterId", response.body.id)
 %}
+
+### Add Many Roaster
+POST {{CoffeeRecipes_HostAddress}}/Roasters/Crud/Many
+Accept: application/json
+Content-Type: application/json
+X-ApiKey: {{ApiKey}}
+
+  [{
+    "Name": "Roaster 1",
+    "CityId": "01917b69-3581-40e9-af46-7b2fde6c83d1",
+    "Founded": "2024-01-01"
+  },
+  {
+    "Name": "Roaster 2",
+    "CityId": "01917b69-3581-40e9-af46-7b2fde6c83d1",
+    "Founded": "2024-01-01"
+  }
+  ]

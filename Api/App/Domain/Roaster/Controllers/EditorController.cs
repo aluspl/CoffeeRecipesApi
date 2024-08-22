@@ -10,7 +10,7 @@ namespace Api.App.Domain.Roaster.Controllers;
 
 [Area("Roasters")]
 [Route("[area]/[controller]")]
-public class CrudController(IMessageBus bus) : ApiKeyController
+public class EditorController(IMessageBus bus) : ApiKeyController
 {
     [HttpPost()]
     [ProducesResponseType(typeof(CoffeeRoasterResponse), 200)]
