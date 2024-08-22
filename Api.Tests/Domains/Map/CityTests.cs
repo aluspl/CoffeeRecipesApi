@@ -37,7 +37,7 @@ public class CityTests(AppFixture fixture) : IntegrationContext(fixture)
         // Assert
         var province = await SeedProvince();
         var city = await SeedCity(province.Id);
-        var query = new QueryCityList(province.Id, null);
+        var query = new QueryCityListByProvinceId(province.Id);
 
         // Act
         var tracked = await Host.InvokeMessageAndWaitAsync<IEnumerable<CityResponse>>(query);
@@ -70,7 +70,7 @@ public class CityTests(AppFixture fixture) : IntegrationContext(fixture)
         // Assert
         var province = await SeedProvince();
         var city = await SeedCity(province.Id);
-        var query = new QueryCityList(null, city.Name);
+        var query = new QueryCityListByName(city.Name);
 
         // Act
         var tracked = await Host.InvokeMessageAndWaitAsync<IEnumerable<CityResponse>>(query);

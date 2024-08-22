@@ -8,7 +8,7 @@ services:
   api:
     image: coffeerecipeapi
     build:
-      context: .
+      context: ./Api
       dockerfile: ./Dockerfile
     depends_on:
       - db
@@ -18,6 +18,7 @@ services:
         ASPNETCORE_Kestrel__Certificates__Default__Password: 2137
         ASPNETCORE_Kestrel__Certificates__Default__Path: /https/cert.pfx
         HTTP_PORTS: 80
+        HTTPS_PORT: 443
     ports:
       - "5000:80"
       - "5001:443"

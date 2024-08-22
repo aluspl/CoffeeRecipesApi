@@ -11,6 +11,8 @@ public class AppFixture : IAsyncLifetime
 {
     private string MartenSchemaNameValue { get; } = "sch" + Guid.NewGuid().ToString().Replace("-", string.Empty);
     private const string MartenSchemaName = "Marten:SchemaName";
+    private const string MartenUseStatic = "Marten:UseStatic";
+    
     public IAlbaHost Host = null!;
 
     public AppFixture()
@@ -23,6 +25,7 @@ public class AppFixture : IAsyncLifetime
         Host = await AlbaHost.For<Program>(b =>
         {
             Environment.SetEnvironmentVariable(MartenSchemaName, MartenSchemaNameValue);
+            Environment.SetEnvironmentVariable(MartenUseStatic, "false");
 
             // b.ConfigureAppConfiguration((context, configurationBuilder) =>
             // {
