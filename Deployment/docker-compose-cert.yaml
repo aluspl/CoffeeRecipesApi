@@ -1,26 +1,29 @@
-  worker_processes 1;
-    
-    events { worker_connections 1024; }
-    
-    http {
+version: '3.9'
 
-    sendfile on;
-    
-    server {
-    listen 80;
-    listen [::]:80;
-    
-    server_name dev-recipes.lifelike.pl www.dev-recipes.lifelike.pl;
-    server_tokens off;
-    
-    location /.well-known/acme-challenge/ {
-    allow all;
-    root /var/www/html;
-    }
-    
-    location / {
-    allow all;
-    root /var/www/html;
-    }
-    }
-  }
+networks:
+  network:
+    name: network
+
+services:
+  web:
+    container_name: proxy
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./certbot/www:/var/www/html
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./nginx-cert:/etc/nginx
+      - ./certbot:/etc/letsencrypt
+    networks:
+      - network
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot:/etc/letsencrypt
+      - ./certbot/www/:/var/www/html/:rw
+    depends_on:
+      - web
+    command: certonly --webroot --webroot-path=/var/www/html --email szymon@lifelike.pl --agree-tos --no-eff-email -d dev-recipes.lifelike.pl -d www.dev-recipes.lifelike.pl

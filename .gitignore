@@ -400,3 +400,4 @@ FodyWeavers.xsd
 .idea
 
 Deployment/db/
+Api/Internal/

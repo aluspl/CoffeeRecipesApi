@@ -22,15 +22,15 @@ try
     builder.Host.ApplyOaktonExtensions();
     builder.Services.AddHostedService<DatabaseInitializer>();
 // Add Wolverine to project
-    builder.Host.UseWolverine();
+    builder.Host.UseWolverine(builder.Environment.IsProduction());
     builder.Host.UseResourceSetupOnStartup();
 
+    builder.Services.UseDatabase(builder.Configuration);
     builder.Services.AddSerilog();
     builder.Services.UseSwagger();
     builder.Services.AddControllers().AddNewtonsoftJson();
     builder.Services.UseJson();
     builder.Services.AddHealthChecks();
-    builder.Services.UseDatabase(builder.Configuration);
 
     var app = builder.Build();
 

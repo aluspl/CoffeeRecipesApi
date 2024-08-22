@@ -4,4 +4,6 @@ public class MartenSettings
 {
     public const string SECTION = "Marten";
     public string SchemaName { get; set; }
+
+    public bool UseStatic { get; set; }
 }

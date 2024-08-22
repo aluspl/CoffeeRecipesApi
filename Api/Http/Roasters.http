@@ -19,11 +19,11 @@ Accept: application/json
 Content-Type: application/json
 X-ApiKey: {{ApiKey}}
 
-{
-  "Name": "Test Roaster",
-  "CityId": "{{CityId}}",
-  "Founded": "2024-01-01"
-}
+  {
+    "Name": "Test Roaster",
+    "CityId": "{{CityId}}",
+    "Founded": "2024-01-01"
+  }
 
 > {%
     client.test("Request executed successfully", function () {

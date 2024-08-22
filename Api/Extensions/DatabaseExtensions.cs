@@ -1,8 +1,12 @@
 ﻿using Api.App.Common.Configs;
 using Api.App.Common.Consts;
 using Api.App.Common.Extensions;
+using Api.App.Domain.Map.Entities;
+using Api.App.Domain.Roaster.Entities;
 using Api.App.Infrastructure.Database.Entities;
+using JasperFx.CodeGeneration;
 using Marten;
+using Marten.Events.Daemon.Resiliency;
 using Microsoft.Extensions.Options;
 using Weasel.Core;
 using Wolverine.Marten;
@@ -21,23 +25,30 @@ public static class DatabaseExtensions
     {
         var connectionString = configurationManager.GetConnectionString(CommonConsts.ConnectionString);
         var settings = configurationManager.GetConfig<MartenSettings>("Marten");
-
-        services.AddMarten(options =>
+        services.AddMarten(opts =>
             {
                 // Establish the connection string to your Marten database
-                options.Connection(connectionString!);
+                opts.Connection(connectionString!);
 
                 // Specify that we want to use STJ as our serializer
-                options.UseSystemTextJsonForSerialization();
+                opts.UseSystemTextJsonForSerialization();
+                
+                // Register Schemas
+                opts.Schema.For<IEntity>().IdStrategy(new CombGuidIdGeneration());
+             
+                opts.RegisterDocumentType<City>();
+                opts.RegisterDocumentType<Province>();
+                opts.RegisterDocumentType<CoffeeRoaster>();
 
-                options.Schema.For<IEntity>().IdStrategy(new CombGuidIdGeneration());
                 if (!string.IsNullOrEmpty(settings.SchemaName))
                 {
-                    options.Events.DatabaseSchemaName = settings.SchemaName;
-                    options.DatabaseSchemaName = settings.SchemaName;
+                    opts.Events.DatabaseSchemaName = settings.SchemaName;
+                    opts.DatabaseSchemaName = settings.SchemaName;
                 }
             })
+            .OptimizeArtifactWorkflow()
             .UseLightweightSessions()
+            .AddAsyncDaemon(DaemonMode.Solo)
             .IntegrateWithWolverine();
 
         return services;

@@ -3,39 +3,36 @@ using Api.App.Domain.Map.Entities;
 using Api.App.Domain.Map.Handlers.Queries;
 using Api.App.Domain.Map.Models.Responses;
 using Marten;
+using Wolverine.Attributes;
 using MapExtensions = Api.App.Domain.Map.Models.Responses.MapExtensions;
 
 namespace Api.App.Domain.Map.Handlers;
 
-public class QueryCityHandler
+[WolverineHandler]
+public static class QueryCityHandler
 {
-    public static async Task<IEnumerable<CityResponse>> HandleAsync(QueryCityList query, IDocumentStore store)
+    public static async Task<IEnumerable<CityResponse>> HandleAsync(QueryCityListByProvinceId query,
+        IDocumentStore store)
     {
         await using var session = store.QuerySession();
 
-        var sessionQuery = SessionQuery(query, session);
+        var sessionQuery = session
+            .Query<City>()
+            .Where(x => x.ProvinceId == query.ProvinceId);
 
         var sessions = await sessionQuery.ToListAsync();
         return sessions.Select(MapExtensions.Map);
     }
 
-    private static IQueryable<City> SessionQuery(QueryCityList query, IQuerySession session)
+    public static async Task<IEnumerable<CityResponse>> HandleAsync(QueryCityListByName query, IDocumentStore store)
     {
-        IQueryable<City> queryable = session.Query<City>();
-        if (query.Name.IsNullOrEmpty())
-        {
-            queryable = session
-                .Query<Entities.City>()
-                .Where(x => x.Name.Contains(query.Name));
-        }
+        await using var session = store.QuerySession();
 
-        if (query.ProvinceId.HasValue)
-        {
-            queryable = session
-                .Query<Entities.City>()
-                .Where(x => x.ProvinceId == query.ProvinceId);
-        }
-        
-        return queryable;
+        IQueryable<City> sessionQuery = query.Name.IsNullOrEmpty()
+            ? session.Query<City>()
+            : session.Query<City>().Where(x => x.Name.Contains(query.Name));
+
+        var sessions = await sessionQuery.ToListAsync();
+        return sessions.Select(MapExtensions.Map);
     }
 }
