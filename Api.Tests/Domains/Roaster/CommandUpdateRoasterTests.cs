@@ -2,7 +2,6 @@
 using Api.App.Domain.Roaster.Entities;
 using Api.App.Domain.Roaster.Handlers.Commands;
 using Api.App.Domain.Roaster.Models;
-using Marten;
 using Shouldly;
 using Wolverine.Tracking;
 
@@ -18,24 +17,49 @@ public class CommandUpdateRoasterTests(AppFixture fixture) : IntegrationContext(
         var province = await SeedProvince();
         var city = await SeedCity(province.Id);
         var roaster = await SeedRoaster(city.Id);
-        var command = new CommandUpdateCoffeeRoaster(roaster.Id, "Pope Roaster The Second", city.Id);
+        var cityCommand = new CommandUpdateRoasterCity(roaster.Id, city.Id);
 
         // Act
-        var tracked = await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(command);
+        var tracked = await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(cityCommand);
         var status = tracked.Item1;
         var result = tracked.Item2;
 
         // Assert
-        result.ShouldNotBeNull();
         status.Status.ShouldBe(TrackingStatus.Completed);
-        
         result.ShouldNotBeNull();
         result.CityId.ShouldBe(city.Id);
-        result.Name.ShouldBe(command.Name);
+
+        // Assign
+        var nameCommand = new CommandUpdateRoasterName(roaster.Id, "");
+
+        // Act
+        tracked = await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(nameCommand);
+        status = tracked.Item1;
+        result = tracked.Item2;
+
+        // Assert
+        status.Status.ShouldBe(TrackingStatus.Completed);
+        result.ShouldNotBeNull();
+        result.Name.ShouldBe(nameCommand.Name);
         
-        var item = await Store.QuerySession().Query<CoffeeRoaster>().FirstOrDefaultAsync();
-        item.ShouldNotBeNull();
-        item.Id.ShouldBe(result.Id);
+        // Assign
+        var urlsCommand = new CommandUpdateRoasterLinks(roaster.Id, [
+            "https://2137.vat",
+            "https://test.test"
+        ]);
+
+        // Act
+        tracked = await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(urlsCommand);
+        status = tracked.Item1;
+        result = tracked.Item2;
+
+        // Assert
+        status.Status.ShouldBe(TrackingStatus.Completed);
+        result.ShouldNotBeNull();
+        result.Urls.ShouldNotBeNull();
+        result.Urls.ShouldNotBeEmpty();
+        result.Urls.Count().ShouldBe(urlsCommand.Urls.Count);
+        result.Urls.ShouldBe(urlsCommand.Urls.Select(p => new Uri(p)));
     }
     
     [Fact]
@@ -45,7 +69,7 @@ public class CommandUpdateRoasterTests(AppFixture fixture) : IntegrationContext(
         var province = await SeedProvince();
         var city = await SeedCity(province.Id);
         var roaster = await SeedRoaster(city.Id);
-        var command = new CommandUpdateCoffeeRoaster(roaster.Id, "Pope Roaster The Second", Guid.NewGuid());
+        var command = new CommandUpdateRoasterCity(roaster.Id, Guid.NewGuid());
 
         // Act
         await Assert.ThrowsAsync<NotFoundException>(async () => await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(command));

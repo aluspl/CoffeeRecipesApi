@@ -29,13 +29,11 @@ public static class DatabaseExtensions
             {
                 // Establish the connection string to your Marten database
                 opts.Connection(connectionString!);
-
-                // Specify that we want to use STJ as our serializer
-                opts.UseSystemTextJsonForSerialization();
                 
                 // Register Schemas
                 opts.Schema.For<IEntity>().IdStrategy(new CombGuidIdGeneration());
-             
+                opts.UseSystemTextJsonForSerialization(EnumStorage.AsString);
+
                 opts.RegisterDocumentType<City>();
                 opts.RegisterDocumentType<Province>();
                 opts.RegisterDocumentType<CoffeeRoaster>();
