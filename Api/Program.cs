@@ -45,6 +45,7 @@ try
     app.SetupMapModule();
 
     app.MapHealthChecks("/healthz");
+    app.MapGet("/", () => "OK");
 
     await app.RunOaktonCommands(args);
 }
