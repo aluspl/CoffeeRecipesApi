@@ -20,7 +20,7 @@ public class DatabaseInitializer(IDocumentStore store) : IHostedService
     {
         await using var session = store.LightweightSession();
         var count = await session.Query<Province>().CountAsync();
-        if (count == ProvincesConsts.Provinces.Count)
+        if (count != 0)
         {
             return;
         }

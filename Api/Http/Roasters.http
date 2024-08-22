@@ -1,12 +1,34 @@
-@CoffeeRecipes_HostAddress = http://localhost:5235
-### Get Cities
-GET {{CoffeeRecipes_HostAddress}}/Map/City/
+@CoffeeRecipes_HostAddress = {{Host}}
+### Get All Roasters
+GET {{CoffeeRecipes_HostAddress}}/Roasters/Query/all
 Accept: application/json
+Content-Type: application/json
+### Get Roasters by City
+GET {{CoffeeRecipes_HostAddress}}/Roasters/Query/city/{{CityId}}
+Accept: application/json
+Content-Type: application/json
 
-### Get Cities by Province
-GET {{CoffeeRecipes_HostAddress}}/Map/City/
+### Get Roaster Details
+GET {{CoffeeRecipes_HostAddress}}/Roasters/Query/details/{{RoasterId}}
 Accept: application/json
+Content-Type: application/json
 
-### Get Provinces
-GET {{CoffeeRecipes_HostAddress}}/Map/Province
+### Add Roaster
+POST {{CoffeeRecipes_HostAddress}}/Roasters/Crud
 Accept: application/json
+Content-Type: application/json
+X-ApiKey: {{ApiKey}}
+
+  {
+    "Name": "Test Roaster",
+    "CityId": "{{CityId}}",
+    "Founded": "2024-01-01"
+  }
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.global.set("RoasterId", response.body.id)
+%}

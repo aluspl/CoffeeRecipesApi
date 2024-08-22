@@ -1,5 +1,4 @@
 ﻿using Api.App.Common.Controller;
-using Api.App.Domain.Map.Handlers.Queries;
 using Api.App.Domain.Map.Models.Responses;
 using Api.App.Domain.Roaster.Handlers.Queries;
 using Api.App.Domain.Roaster.Models;
@@ -16,7 +15,7 @@ public class QueryController(IMessageBus bus) : ApiController
     [ProducesResponseType(typeof(IEnumerable<CoffeeRoasterResponse>), 200)]
     public async Task<ActionResult<IEnumerable<CoffeeRoasterResponse>>> GetAllRoasters()
     {
-        var responses = await bus.InvokeAsync<IEnumerable<CoffeeRoasterResponse>>(new QueryRoasterList(null, false));
+        var responses = await bus.InvokeAsync<IEnumerable<CoffeeRoasterResponse>>(new QueryRoasterList(null, null, false));
         return Ok(responses);
     }
 
@@ -24,7 +23,15 @@ public class QueryController(IMessageBus bus) : ApiController
     [ProducesResponseType(typeof(IEnumerable<CityResponse>), 200)]
     public async Task<ActionResult<IEnumerable<CityResponse>>> GetRoastersByCity(Guid cityId)
     {
-        var responses = await bus.InvokeAsync<IEnumerable<CoffeeRoasterResponse>>(new QueryRoasterList(cityId, false));
+        var responses = await bus.InvokeAsync<IEnumerable<CoffeeRoasterResponse>>(new QueryRoasterList(cityId, null, false));
+        return Ok(responses);
+    }
+    
+    [HttpGet("search/{name}")]
+    [ProducesResponseType(typeof(IEnumerable<CityResponse>), 200)]
+    public async Task<ActionResult<IEnumerable<CityResponse>>> GetRoastersByName(string name)
+    {
+        var responses = await bus.InvokeAsync<IEnumerable<CoffeeRoasterResponse>>(new QueryRoasterList(null, name, false));
         return Ok(responses);
     }
     
@@ -34,12 +41,10 @@ public class QueryController(IMessageBus bus) : ApiController
     {
         if (roasterId == Guid.Empty)
         {
-            return BadRequest("Invalid province ID");
+            return BadRequest("Invalid roaster ID");
         }
 
         var cities = await bus.InvokeAsync<CoffeeRoasterResponse>(new QueryRoasterDetail(roasterId));
         return Ok(cities);
     }
 }
-
-public record QueryRoasterDetail(Guid RoasterId);
