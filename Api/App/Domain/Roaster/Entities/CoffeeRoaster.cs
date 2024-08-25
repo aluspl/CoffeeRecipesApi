@@ -30,6 +30,7 @@ public class CoffeeRoaster : IEntity
     #region References
 
     public Guid CityId { get; set; }
+    public Guid? CoverId { get; set; }
 
     #endregion
 } 

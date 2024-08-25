@@ -8,5 +8,4 @@ namespace Api.App.Common.Controller;
 [ProducesResponseType(500)]
 public class ApiController : ControllerBase
 {
-    
 }

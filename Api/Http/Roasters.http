@@ -21,8 +21,7 @@ X-ApiKey: {{ApiKey}}
 
   {
     "Name": "Test Roaster",
-    "CityId": "{{CityId}}",
-    "Founded": "2024-01-01"
+    "CityId": "{{CityId}}"
   }
 
 > {%
@@ -41,12 +40,24 @@ X-ApiKey: {{ApiKey}}
 
   [{
     "Name": "Roaster 1",
-    "CityId": "01917b69-3581-40e9-af46-7b2fde6c83d1",
-    "Founded": "2024-01-01"
+    "CityId": "01917b69-3581-40e9-af46-7b2fde6c83d1"
   },
   {
     "Name": "Roaster 2",
-    "CityId": "01917b69-3581-40e9-af46-7b2fde6c83d1",
-    "Founded": "2024-01-01"
+    "CityId": "01917b69-3581-40e9-af46-7b2fde6c83d1"
   }
   ]
+
+### Add Roaster Logo
+
+POST {{CoffeeRecipes_HostAddress}}/Roasters/File/{{RoasterId}}
+Accept: image/png
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+X-ApiKey: {{ApiKey}}
+
+--WebAppBoundary
+Content-Disposition: form-data; name="data"; filename="image.png"
+Content-Type: application/json
+
+< ./image.png
+--WebAppBoundary--

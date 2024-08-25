@@ -1,6 +1,6 @@
 using Api.App.Domain.Media.Enum;
 
-namespace Api.App.Domain.Media.Interfaces.Provider;
+namespace Api.App.Media.Interfaces.Provider;
 
 public interface IBlobProvider
 {

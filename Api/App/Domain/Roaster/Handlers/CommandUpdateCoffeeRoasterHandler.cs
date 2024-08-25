@@ -4,6 +4,8 @@ using Api.App.Domain.Roaster.Entities;
 using Api.App.Domain.Roaster.Extensions;
 using Api.App.Domain.Roaster.Handlers.Commands;
 using Api.App.Domain.Roaster.Models;
+using Api.App.Domain.Roaster.Models.Records;
+using Api.App.Roaster.Handlers.Commands;
 using Marten;
 using Wolverine.Attributes;
 
@@ -12,7 +14,7 @@ namespace Api.App.Domain.Roaster.Handlers;
 [WolverineHandler]
 public class CommandUpdateCoffeeRoasterHandler
 {
-    public static async Task<CoffeeRoasterResponse> HandleAsync(CommandUpdateRoasterCity command, IDocumentSession session)
+    public static async Task<CoffeeRoasterUpdated> HandleAsync(CommandUpdateRoasterCity command, IDocumentSession session)
     {
         var entity = await GetCoffeeRoaster(command.Id, session);
 
@@ -21,10 +23,10 @@ public class CommandUpdateCoffeeRoasterHandler
         session.Store(entity);
         await session.SaveChangesAsync();
         
-        return entity.Map();
+        return new CoffeeRoasterUpdated();
     }
 
-    public static async Task<CoffeeRoasterResponse> HandleAsync(CommandUpdateRoasterName command, IDocumentSession session)
+    public static async Task<CoffeeRoasterUpdated> HandleAsync(CommandUpdateRoasterName command, IDocumentSession session)
     {
         if (await session.Query<CoffeeRoaster>().Where(o => o.Name == command.Name && o.Id != command.Id).AnyAsync())
         {
@@ -37,29 +39,39 @@ public class CommandUpdateCoffeeRoasterHandler
         session.Store(entity);
         await session.SaveChangesAsync();
         
-        return entity.Map();
+        return new CoffeeRoasterUpdated();
     }
 
-    public static async Task<CoffeeRoasterResponse> HandleAsync(CommandUpdateRoasterLinks command, IDocumentSession session)
+    public static async Task<CoffeeRoasterUpdated> HandleAsync(CommandUpdateRoasterLinks command, IDocumentSession session)
     {
         var entity = await GetCoffeeRoaster(command.Id, session);
         entity.Urls = command.Urls.Select(p => new Uri(p));
         session.Store(entity);
         await session.SaveChangesAsync();
 
-        return entity.Map();
+        return new CoffeeRoasterUpdated();
     }
     
-    public static async Task<CoffeeRoasterResponse> HandleAsync(CommandUpdateRoasterDescription command, IDocumentSession session)
+    public static async Task<CoffeeRoasterUpdated> HandleAsync(CommandUpdateRoasterDescription command, IDocumentSession session)
     {
         var entity = await GetCoffeeRoaster(command.Id, session);
         entity.Description = command.Description;
         session.Store(entity);
         await session.SaveChangesAsync();
 
-        return entity.Map();
+        return new CoffeeRoasterUpdated();
     }
+    
+    public static async Task<CoffeeRoasterUpdated> HandleAsync(CommandUpdateRoasterCover command, IDocumentSession session)
+    {
+        var entity = await GetCoffeeRoaster(command.RoasterId, session);
+        entity.CoverId = command.FileId;
+        session.Store(entity);
+        await session.SaveChangesAsync();
 
+        return new CoffeeRoasterUpdated();
+    }
+    
     private static async Task<CoffeeRoaster> GetCoffeeRoaster(Guid id, IDocumentSession session)
     {
         var entity = await session

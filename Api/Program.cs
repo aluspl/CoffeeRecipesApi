@@ -1,8 +1,6 @@
 using Api.App.Common.Exceptions;
 using Api.App.Common.Extensions;
 using Api.App.Common.Middleware;
-using Api.App.Domain.Map.Module;
-using Api.App.Domain.Media.Modules;
 using Api.App.Infrastructure.Database.Utils;
 using Api.Extensions;
 using Oakton;
@@ -29,7 +27,7 @@ try
 // Add Wolverine to project
     builder.Host.UseWolverine(builder.Environment.IsProduction());
     builder.Host.UseResourceSetupOnStartup();
-
+    builder.Services.AddConfigurations(builder.Configuration);
     builder.Services.AddSerilog();
     builder.Services.UseSwagger();
     builder.Services.AddControllers().AddNewtonsoftJson();

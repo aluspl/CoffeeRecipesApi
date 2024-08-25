@@ -1,21 +1,21 @@
+using Api.App.Common.Configs;
 using Api.App.Common.Exceptions;
-using Api.App.Common.Extensions;
-using Api.App.Domain.Media.Config;
 using Api.App.Domain.Media.Enum;
-using Api.App.Domain.Media.Interfaces.Provider;
+using Api.App.Media.Interfaces.Provider;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
+using Microsoft.Extensions.Options;
 
 namespace Api.App.Domain.Media.Provider;
 
-public class AzureBlobProvider(IConfigurationManager configuration) : IBlobProvider
+public class AzureBlobProvider(IOptions<MediaSettings> mediaSetting) : IBlobProvider
 {
-    private readonly MediaConfig _mediaConfig = configuration.GetConfig<MediaConfig>(MediaConfig.Section);
-    private readonly string _connectionString = configuration.GetConnectionString("BlobStorage");
+    private readonly MediaSettings _mediaSettings = mediaSetting.Value;
 
     public async Task<string> CreateContainer(ImageType imageType)
     {
-        var container = GetClient().GetBlobContainerClient(_mediaConfig.Folders[imageType]);
+        var containerName = _mediaSettings.Folders[imageType];
+        var container = GetClient().GetBlobContainerClient(containerName);
         await container.CreateIfNotExistsAsync();
         await container.SetAccessPolicyAsync(PublicAccessType.Blob);
         return container.Name;
@@ -58,7 +58,7 @@ public class AzureBlobProvider(IConfigurationManager configuration) : IBlobProvi
 
     private BlobServiceClient GetClient()
     {
-        var client = new BlobServiceClient(_connectionString);
+        var client = new BlobServiceClient(_mediaSettings.ConnectionStrings);
         return client;
     }
 }
