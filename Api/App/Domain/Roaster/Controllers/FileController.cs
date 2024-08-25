@@ -3,6 +3,7 @@ using Api.App.Common.Controller;
 using Api.App.Common.Exceptions;
 using Api.App.Domain.Media.Handlers.Results;
 using Api.App.Domain.Roaster.Models;
+using Api.App.Domain.Roaster.Models.Records;
 using Api.App.Media.Handlers.Commands;
 using Api.App.Roaster.Handlers.Commands;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ public class FileController(IMessageBus bus) : ApiKeyController
         await file.CopyToAsync(stream);
         
         var result = await bus.InvokeAsync<FileUploaded>(new CommandUploadRoasterFile(roasterId, extensions, stream.ToArray()));
-        var response = await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandUpdateRoasterCover(roasterId, result.Id));
+        var response = await bus.InvokeAsync<CoffeeRoasterUpdated>(new CommandUpdateRoasterCover(roasterId, result.Id));
         return Ok(response);
     }
 
