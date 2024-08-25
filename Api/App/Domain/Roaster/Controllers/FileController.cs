@@ -25,7 +25,7 @@ public class FileController(IMessageBus bus) : ApiKeyController
         
         var result = await bus.InvokeAsync<FileUploaded>(new CommandUploadRoasterFile(roasterId, extensions, stream.ToArray()));
         var response = await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandUpdateRoasterCover(roasterId, result.Id));
-        return Ok(result);
+        return Ok(response);
     }
 
     private static string ValidateExtensions(IFormFile file)

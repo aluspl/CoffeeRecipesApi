@@ -2,6 +2,7 @@
 using Api.App.Common.Consts;
 using Api.App.Common.Extensions;
 using Api.App.Domain.Map.Entities;
+using Api.App.Domain.Media.Entity;
 using Api.App.Domain.Roaster.Entities;
 using Api.App.Infrastructure.Database.Entities;
 using JasperFx.CodeGeneration;
@@ -33,11 +34,11 @@ public static class DatabaseExtensions
                 // Register Schemas
                 opts.Schema.For<IEntity>().IdStrategy(new CombGuidIdGeneration());
                 opts.UseSystemTextJsonForSerialization(EnumStorage.AsString);
-
+    
                 opts.RegisterDocumentType<City>();
                 opts.RegisterDocumentType<Province>();
                 opts.RegisterDocumentType<CoffeeRoaster>();
-
+                opts.RegisterDocumentType<CoverFile>();
                 if (!string.IsNullOrEmpty(settings.SchemaName))
                 {
                     opts.Events.DatabaseSchemaName = settings.SchemaName;
