@@ -10,7 +10,7 @@ public class ApiKeyAuthFilter(IMessageBus messageBus) : IAsyncAuthorizationFilte
 {
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        string userApiKey = context.HttpContext.Request.Headers[ApiKeyConstants.ApiKeyHeaderName].ToString();
+        var userApiKey = context.HttpContext.Request.Headers[ApiKeyConstants.ApiKeyHeaderName].ToString();
         if (string.IsNullOrWhiteSpace(userApiKey))
         {
             context.Result = new UnauthorizedResult();

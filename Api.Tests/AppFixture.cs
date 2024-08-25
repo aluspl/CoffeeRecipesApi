@@ -1,5 +1,6 @@
 ﻿using Alba;
 using Api.App.Common.Configs;
+using Api.App.Media.Interfaces.Provider;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Oakton;
@@ -27,28 +28,31 @@ public class AppFixture : IAsyncLifetime
             Environment.SetEnvironmentVariable(MartenSchemaName, MartenSchemaNameValue);
             Environment.SetEnvironmentVariable(MartenUseStatic, "false");
 
-            // b.ConfigureAppConfiguration((context, configurationBuilder) =>
-            // {
-            //     configurationBuilder.AddInMemoryCollection(AddConfiguration());
-            // });
             b.ConfigureTestServices(collection => collection.Configure<MartenSettings>(o =>
             {
                 o.SchemaName = MartenSchemaNameValue;
             }));
-            b.ConfigureServices((context, services) => { services.DisableAllExternalWolverineTransports(); });
+            b.ConfigureServices((context, services) =>
+            {
+                AddMockServices(services);
+                services.DisableAllExternalWolverineTransports();
+            });
         });
+    }
+
+    private void AddMockServices(IServiceCollection services)
+    {
+        var blobProvider = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(IBlobProvider));
+        if (blobProvider != null)
+        {
+            services.Remove(blobProvider);
+        }
+        
+        services.AddScoped<IBlobProvider, MockProviders.MockBlobProviders>();
     }
 
     public async Task DisposeAsync()
     {
         await Host.DisposeAsync();
-    }
-
-    private IEnumerable<KeyValuePair<string, string?>> AddConfiguration()
-    {
-        return new List<KeyValuePair<string, string?>>()
-        {
-            new (MartenSchemaName, MartenSchemaNameValue),
-        };
     }
 }

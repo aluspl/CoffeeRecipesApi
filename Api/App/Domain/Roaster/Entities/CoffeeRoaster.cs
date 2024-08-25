@@ -23,11 +23,14 @@ public class CoffeeRoaster : IEntity
     public DateTime? Founded { get; set; }
 
     public IEnumerable<Uri> Urls { get; set; } = new List<Uri>();
-    
+
+    public string Description { get; set; }
+
     #endregion
     #region References
 
     public Guid CityId { get; set; }
+    public Guid? CoverId { get; set; }
 
     #endregion
 } 

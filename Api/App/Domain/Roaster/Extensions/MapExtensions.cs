@@ -13,6 +13,7 @@ public static class MapExtensions
         response.Name = entity.Name;
         response.Founded = entity.Founded;
         response.Urls = entity.Urls;
+        response.Description = entity.Description;
         return response;
     }
 }

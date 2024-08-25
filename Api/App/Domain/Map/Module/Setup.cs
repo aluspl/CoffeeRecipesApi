@@ -2,8 +2,8 @@
 
 public static class Setup
 {
-    public static IApplicationBuilder SetupMapModule(
-        this IApplicationBuilder app)
+    public static IServiceCollection SetupMapModule(
+        this IServiceCollection app)
     {
         return app;
     }

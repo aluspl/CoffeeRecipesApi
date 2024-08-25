@@ -10,6 +10,8 @@ services:
     build:
       context: ./Api
       dockerfile: ./Dockerfile
+    env_file:
+      - Api/file.env
     depends_on:
       - db
     container_name: utm

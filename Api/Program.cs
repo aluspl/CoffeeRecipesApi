@@ -1,6 +1,6 @@
 using Api.App.Common.Exceptions;
+using Api.App.Common.Extensions;
 using Api.App.Common.Middleware;
-using Api.App.Domain.Map.Module;
 using Api.App.Infrastructure.Database.Utils;
 using Api.Extensions;
 using Oakton;
@@ -27,7 +27,7 @@ try
 // Add Wolverine to project
     builder.Host.UseWolverine(builder.Environment.IsProduction());
     builder.Host.UseResourceSetupOnStartup();
-
+    builder.Services.AddConfigurations(builder.Configuration);
     builder.Services.AddSerilog();
     builder.Services.UseSwagger();
     builder.Services.AddControllers().AddNewtonsoftJson();
@@ -36,8 +36,8 @@ try
     builder.Services.AddCors();
     builder.Services.UseDatabase(builder.Configuration);
     builder.Services.AddApplicationInsightsTelemetry();
-    builder.Services.AddDefaultExceptionHandler(
-        (exception, _) => exception switch
+    builder.Services.AddModules();
+    builder.Services.AddDefaultExceptionHandler((exception, _) => exception switch
         {
             NotFoundException => exception.MapToProblemDetails(StatusCodes.Status404NotFound),
             BusinessException => exception.MapToProblemDetails(StatusCodes.Status400BadRequest),
@@ -52,9 +52,6 @@ try
     app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin());
     app.UseRouting();
     app.MapControllers();
-
-// Setup Modules
-    app.SetupMapModule();
 
     app.MapHealthChecks("/healthz");
     app.MapGet("/", () => "OK");
