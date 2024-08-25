@@ -402,3 +402,5 @@ FodyWeavers.xsd
 Deployment/db/
 Api/Internal/
 Api/appsettings.Development.json
+
+Api/*.env
