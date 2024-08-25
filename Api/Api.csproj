@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.21.2" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.22.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.7" />
@@ -29,8 +30,5 @@
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="Api.Tests" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App\Domain\Security\Services\" />
   </ItemGroup>
 </Project>

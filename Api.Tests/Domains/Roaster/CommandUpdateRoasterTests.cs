@@ -60,6 +60,19 @@ public class CommandUpdateRoasterTests(AppFixture fixture) : IntegrationContext(
         result.Urls.ShouldNotBeEmpty();
         result.Urls.Count().ShouldBe(urlsCommand.Urls.Count);
         result.Urls.ShouldBe(urlsCommand.Urls.Select(p => new Uri(p)));
+        
+        // Assign
+        var descriptionCommand = new CommandUpdateRoasterDescription(roaster.Id, "Test");
+
+        // Act
+        tracked = await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(descriptionCommand);
+        status = tracked.Item1;
+        result = tracked.Item2;
+
+        // Assert
+        status.Status.ShouldBe(TrackingStatus.Completed);
+        result.ShouldNotBeNull();
+        result.Description.ShouldBe(descriptionCommand.Description);
     }
     
     [Fact]

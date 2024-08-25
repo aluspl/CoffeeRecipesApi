@@ -14,7 +14,7 @@ Accept: application/json
 Content-Type: application/json
 
 ### Add Roaster
-POST {{CoffeeRecipes_HostAddress}}/Roasters/Crud
+POST {{CoffeeRecipes_HostAddress}}/Roasters/Editor
 Accept: application/json
 Content-Type: application/json
 X-ApiKey: {{ApiKey}}
@@ -34,7 +34,7 @@ X-ApiKey: {{ApiKey}}
 %}
 
 ### Add Many Roaster
-POST {{CoffeeRecipes_HostAddress}}/Roasters/Crud/Many
+POST {{CoffeeRecipes_HostAddress}}/Roasters/Editor/Many
 Accept: application/json
 Content-Type: application/json
 X-ApiKey: {{ApiKey}}

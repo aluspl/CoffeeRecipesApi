@@ -18,7 +18,7 @@ public class CommandCreateRoasterTests(AppFixture fixture) : IntegrationContext(
         var province = await SeedProvince();
         var city = await SeedCity(province.Id);
         var founded = DateTime.Now;
-        var command = new CommandCreateCoffeeRoaster("Pope Roaster", city.Id, founded);
+        var command = new CommandCreateCoffeeRoaster("Pope Roaster", city.Id);
 
         // Act
         var tracked = await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(command);
@@ -32,7 +32,6 @@ public class CommandCreateRoasterTests(AppFixture fixture) : IntegrationContext(
         result.ShouldNotBeNull();
         result.CityId.ShouldBe(city.Id);
         result.Name.ShouldBe(command.Name);
-        result.Founded.ShouldBe(command.Founded);
         
         var item = await Store.QuerySession().Query<CoffeeRoaster>().FirstOrDefaultAsync();
         item.ShouldNotBeNull();
@@ -43,8 +42,7 @@ public class CommandCreateRoasterTests(AppFixture fixture) : IntegrationContext(
     public async Task Should_Not_Add_Roaster_When_City_Not_Exists()
     {
         // Assert
-        var founded = DateTime.Now;
-        var command = new CommandCreateCoffeeRoaster("Pope Roaster", Guid.NewGuid(), founded);
+        var command = new CommandCreateCoffeeRoaster("Pope Roaster", Guid.NewGuid());
 
         // Act
         await Assert.ThrowsAsync<NotFoundException>(async () => await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(command));

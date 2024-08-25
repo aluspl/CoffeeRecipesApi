@@ -19,8 +19,7 @@ public class CommandCreateCoffeeRoasterHandler
         var entity = new CoffeeRoaster()
         {
             Name = command.Name,
-            CityId = command.CityId, // Validate If Exists
-            Founded = command.Founded,
+            CityId = command.CityId,
         };
         session.Store(entity);
         await session.SaveChangesAsync();

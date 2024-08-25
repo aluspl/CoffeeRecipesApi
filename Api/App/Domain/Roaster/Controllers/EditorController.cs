@@ -1,9 +1,9 @@
 ﻿using Api.App.Common.Controller;
-using Api.App.Domain.Roaster.Handlers;
 using Api.App.Domain.Roaster.Handlers.Commands;
 using Api.App.Domain.Roaster.Models;
 using Api.App.Domain.Roaster.Models.Request;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using Wolverine;
 
 namespace Api.App.Domain.Roaster.Controllers;
@@ -16,17 +16,25 @@ public class EditorController(IMessageBus bus) : ApiKeyController
     [ProducesResponseType(typeof(CoffeeRoasterResponse), 200)]
     public async Task<ActionResult<CoffeeRoasterResponse>> Create([FromBody] CreateCoffeeRoasterRequest request)
     {
-        var responses = await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandCreateCoffeeRoaster(request.Name, request.CityId, request.Founded));
+        var responses = await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandCreateCoffeeRoaster(request.Name, request.CityId));
         return Ok(responses);
     }
     
     [HttpPost("many")]
-    [ProducesResponseType(typeof(CoffeeRoasterResponse), 200)]
+    [ProducesResponseType(typeof(ICollection<CoffeeRoasterResponse>), 200)]
     public async Task<ActionResult> CreateMany([FromBody] ICollection<CreateCoffeeRoasterRequest> request)
     {
+        var results = new List<CoffeeRoasterResponse>();
         foreach (var roasterRequest in request)
         {
-            await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandCreateCoffeeRoaster(roasterRequest.Name, roasterRequest.CityId, roasterRequest.Founded));
+            try
+            {
+                await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandCreateCoffeeRoaster(roasterRequest.Name, roasterRequest.CityId));
+            }
+            catch (Exception e)
+            {
+                Log.Logger.Error(e, $"Create Many Result {roasterRequest.Name}");
+            }
         }
         return Ok();
     }
@@ -52,6 +60,14 @@ public class EditorController(IMessageBus bus) : ApiKeyController
     public async Task<ActionResult<CoffeeRoasterResponse>> UpdateLinks([FromBody] UpdateCoffeeRoasterLinksRequest request)
     {
         var responses = await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandUpdateRoasterLinks(request.Id, request.Urls));
+        return Ok(responses);
+    }
+    
+    [HttpPut("description")]
+    [ProducesResponseType(typeof(CoffeeRoasterResponse), 200)]
+    public async Task<ActionResult<CoffeeRoasterResponse>> UpdateDescription([FromBody] UpdateCoffeeRoasterNameRequest request)
+    {
+        var responses = await bus.InvokeAsync<CoffeeRoasterResponse>(new CommandUpdateRoasterDescription(request.Id, request.Name));
         return Ok(responses);
     }
 }

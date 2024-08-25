@@ -40,8 +40,7 @@ public class CommandUpdateCoffeeRoasterHandler
         return entity.Map();
     }
 
-    public static async Task<CoffeeRoasterResponse> HandleAsync(CommandUpdateRoasterLinks command,
-        IDocumentSession session)
+    public static async Task<CoffeeRoasterResponse> HandleAsync(CommandUpdateRoasterLinks command, IDocumentSession session)
     {
         var entity = await GetCoffeeRoaster(command.Id, session);
         entity.Urls = command.Urls.Select(p => new Uri(p));
@@ -51,6 +50,16 @@ public class CommandUpdateCoffeeRoasterHandler
         return entity.Map();
     }
     
+    public static async Task<CoffeeRoasterResponse> HandleAsync(CommandUpdateRoasterDescription command, IDocumentSession session)
+    {
+        var entity = await GetCoffeeRoaster(command.Id, session);
+        entity.Description = command.Description;
+        session.Store(entity);
+        await session.SaveChangesAsync();
+
+        return entity.Map();
+    }
+
     private static async Task<CoffeeRoaster> GetCoffeeRoaster(Guid id, IDocumentSession session)
     {
         var entity = await session

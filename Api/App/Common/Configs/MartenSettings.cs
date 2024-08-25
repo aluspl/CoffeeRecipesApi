@@ -2,6 +2,6 @@
 
 public class MartenSettings
 {
-    public const string SECTION = "Marten";
+    public const string Section = "Marten";
     public string SchemaName { get; set; }
 }

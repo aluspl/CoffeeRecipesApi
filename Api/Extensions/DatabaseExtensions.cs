@@ -46,7 +46,7 @@ public static class DatabaseExtensions
             })
             .OptimizeArtifactWorkflow()
             .UseLightweightSessions()
-            .AddAsyncDaemon(DaemonMode.Solo)
+            .AddAsyncDaemon(DaemonMode.HotCold)
             .IntegrateWithWolverine();
 
         return services;

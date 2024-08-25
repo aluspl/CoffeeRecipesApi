@@ -24,10 +24,6 @@ public static class HostExtensions
                 // You probably only ever want to do this in Production
                 options.Services.AssertAllExpectedPreBuiltTypesExistOnStartUp();
             }
-            else
-            {
-                options.CodeGeneration.TypeLoadMode = TypeLoadMode.Auto;
-            }
         });
 
         return host;
