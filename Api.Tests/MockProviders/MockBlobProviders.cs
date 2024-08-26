@@ -20,7 +20,7 @@ public class MockBlobProviders : IBlobProvider
         return Task.CompletedTask;
     }
 
-    public Task<Uri> UploadFile(byte[] file, string container, string name)
+    public Task<Uri> UploadImage(Stream file, string container, string name)
     {
         return Task.FromResult(new Uri("https://google.pl"));
     }

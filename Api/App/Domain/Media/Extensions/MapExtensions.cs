@@ -8,14 +8,5 @@ namespace Api.App.Domain.Media.Extensions;
 
 public static class MapExtensions
 {
-    public static CoverFileResponse Map(this CoverFile entity)
-    {
-        var response = new CoverFileResponse()
-        {
-            Cover = entity.ImageUrl,
-            Thumbnail = entity.ThumbnailUrl,
-        };
-        
-        return response;
-    }
+
 }

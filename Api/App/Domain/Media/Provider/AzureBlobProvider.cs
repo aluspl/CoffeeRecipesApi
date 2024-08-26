@@ -2,6 +2,7 @@ using Api.App.Common.Configs;
 using Api.App.Common.Exceptions;
 using Api.App.Domain.Media.Enum;
 using Api.App.Media.Interfaces.Provider;
+using Api.App.Media.Utils;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Options;
@@ -48,11 +49,17 @@ public class AzureBlobProvider(IOptions<MediaSettings> mediaSetting) : IBlobProv
         await blob.DeleteAsync();
     }
 
-    public async Task<Uri> UploadFile(byte[] file, string containerName, string name)
+    public async Task<Uri> UploadImage(Stream file, string containerName, string name)
     {
+        file.Position = 0;
         var container = GetClient().GetBlobContainerClient(containerName);
         var blob = container.GetBlobClient(name);
-        await blob.UploadAsync(BinaryData.FromBytes(file));
+        await blob.DeleteIfExistsAsync();
+        await blob.UploadAsync(file);
+        await blob.SetHttpHeadersAsync(new BlobHttpHeaders()
+        {
+            ContentType = ContentTypeHelper.GetContentType(name),
+        });
         return blob.Uri;
     }
 

@@ -7,22 +7,22 @@ namespace Api.App.Media.Utils;
 
 public static class ImageUtils
 {
-    public static async Task<byte[]> ResizeImage(byte[] commandFile)
+    public static async Task ResizeImage(Stream stream)
     {
-        using var image = Image.Load(commandFile);
+        using var image = await Image.LoadAsync(stream);
         var width = 800;
         var height = 800;
         
         image.Mutate(x => x.Resize(width, height, KnownResamplers.Lanczos3));
         
-        using var memory = new MemoryStream();
-        await image.SaveAsync(memory, PngFormat.Instance);
-        return memory.ToArray();
+        await image.SaveAsync(stream, PngFormat.Instance);
     }
 
-    public static void ValidateImage(byte[] commandFile)
+    public static void ValidateImage(Stream stream)
     {
-        using var image = Image.Load(commandFile);
+        stream.Position = 0;
+
+        using var image = Image.Load(stream);
         if (image.Width != image.Height)
         {
             throw new BusinessException("Image should be Square");

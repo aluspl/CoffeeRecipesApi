@@ -15,5 +15,5 @@ public class CoffeeRoasterResponse : BaseResponse
 
     public IEnumerable<Uri> Urls { get; set; }
  
-    public CoverFileResponse Cover { get; set; }
+    public CoverFileResponse Image { get; set; }
 }

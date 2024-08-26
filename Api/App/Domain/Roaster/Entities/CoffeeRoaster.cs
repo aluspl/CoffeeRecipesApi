@@ -1,3 +1,4 @@
+using Api.App.Domain.Media.Entity;
 using Api.App.Infrastructure.Database.Entities;
 
 namespace Api.App.Domain.Roaster.Entities;
@@ -30,7 +31,23 @@ public class CoffeeRoaster : IEntity
     #region References
 
     public Guid CityId { get; set; }
+    
     public Guid? CoverId { get; set; }
 
+    public CoverFile Image { get; set; }
+
     #endregion
+
+    public void AddCoverImage(Uri url)
+    {
+        Image ??= new CoverFile();
+        Image.ImageUrl = url;
+    }
+
+    public void AddCoverThumbnail(Uri thumbnailUrl)
+    {
+        Image ??= new CoverFile();
+        Image.ThumbnailUrl = thumbnailUrl;
+
+    }
 } 
