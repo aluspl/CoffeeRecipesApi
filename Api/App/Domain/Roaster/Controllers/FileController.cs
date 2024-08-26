@@ -1,10 +1,10 @@
 ﻿using Api.App.Common.Consts;
 using Api.App.Common.Controller;
 using Api.App.Common.Exceptions;
-using Api.App.Domain.Media.Handlers.Results;
+using Api.App.Domain.Media.Handlers;
+using Api.App.Domain.Media.Handlers.Commands;
 using Api.App.Domain.Roaster.Models;
 using Api.App.Domain.Roaster.Models.Records;
-using Api.App.Media.Handlers.Commands;
 using Api.App.Roaster.Handlers.Commands;
 using Microsoft.AspNetCore.Mvc;
 using Wolverine;
@@ -13,19 +13,19 @@ namespace Api.App.Roaster.Controllers;
 
 [Area("Roasters")]
 [Route("[area]/[controller]")]
-public class FileController(IMessageBus bus) : ApiKeyController
+public class FileController(IMessageBus bus, IFileSetter fileSetter) : ApiKeyController
 {
     [HttpPost("{roasterId:guid}")]
     [ProducesResponseType(typeof(CoffeeRoasterResponse), 200)]
     public async Task<ActionResult<CoffeeRoasterResponse>> UploadFile(Guid roasterId)
     {
+        using var stream = new MemoryStream();
         var file = GetFile();
         var extensions = ValidateExtensions(file);
-        using var stream = new MemoryStream();
         await file.CopyToAsync(stream);
-        
-        var result = await bus.InvokeAsync<FileUploaded>(new CommandUploadRoasterFile(roasterId, extensions, stream.ToArray()));
-        var response = await bus.InvokeAsync<CoffeeRoasterUpdated>(new CommandUpdateRoasterCover(roasterId, result.Id));
+
+        var result = await fileSetter.Upload(new UploadFileModel(roasterId, extensions, stream));
+        var response = await bus.InvokeAsync<CoffeeRoasterUpdated>(new CommandUpdateRoasterCover(roasterId, result.ImageUrl, result.ThumbnailUrl));
         return Ok(response);
     }
 
@@ -51,7 +51,7 @@ public class FileController(IMessageBus bus) : ApiKeyController
             throw new NotFoundException("File not exists in form");
         }
 
-        IFormFile form = HttpContext.Request.Form.Files.FirstOrDefault();
+        var form = HttpContext.Request.Form.Files.FirstOrDefault();
 
         if (form == null)
         {

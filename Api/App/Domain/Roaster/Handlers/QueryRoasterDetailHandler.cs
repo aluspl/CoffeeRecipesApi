@@ -1,7 +1,4 @@
-﻿using Api.App.Domain.Media.Extensions;
-using Api.App.Domain.Media.Getter;
-using Api.App.Domain.Media.Models;
-using Api.App.Domain.Roaster.Extensions;
+﻿using Api.App.Domain.Roaster.Extensions;
 using Api.App.Domain.Roaster.Handlers.Queries;
 using Api.App.Domain.Roaster.Models;
 using Marten;
@@ -12,8 +9,7 @@ public class QueryRoasterDetailHandler
 {
     public static async Task<CoffeeRoasterResponse> HandleAsync(
         QueryRoasterDetail query, 
-        IDocumentStore store,
-        IFileGetter fileGetter)
+        IDocumentStore store)
     {
         await using var session = store.QuerySession();
 
@@ -22,8 +18,6 @@ public class QueryRoasterDetailHandler
             .Where(x => x.Id == query.RoasterId)
             .FirstOrDefaultAsync();
 
-        var response = entity.Map();
-        response.Cover = await fileGetter.GetCover(entity.CoverId);
-        return response;
+        return entity.Map();
     }
 }

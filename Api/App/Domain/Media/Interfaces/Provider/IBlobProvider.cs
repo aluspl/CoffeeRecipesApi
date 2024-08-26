@@ -10,5 +10,5 @@ public interface IBlobProvider
 
     Task RemoveFile(string container, string name);
 
-    Task<Uri> UploadFile(byte[] file, string container, string name);
+    Task<Uri> UploadImage(Stream file, string container, string name);
 }

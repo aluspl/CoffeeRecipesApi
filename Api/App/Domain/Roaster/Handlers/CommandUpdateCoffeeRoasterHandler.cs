@@ -65,7 +65,8 @@ public class CommandUpdateCoffeeRoasterHandler
     public static async Task<CoffeeRoasterUpdated> HandleAsync(CommandUpdateRoasterCover command, IDocumentSession session)
     {
         var entity = await GetCoffeeRoaster(command.RoasterId, session);
-        entity.CoverId = command.FileId;
+        entity.AddCoverImage(command.ImageUrl);
+        entity.AddCoverThumbnail(command.ThumbnailUrl);
         session.Store(entity);
         await session.SaveChangesAsync();
 

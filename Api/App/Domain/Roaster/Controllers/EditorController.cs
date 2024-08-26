@@ -36,7 +36,7 @@ public class EditorController(IMessageBus bus) : ApiKeyController
                 Log.Logger.Error(e, $"Create Many Result {roasterRequest.Name}");
             }
         }
-        return Ok();
+        return Ok(results);
     }
     
     [HttpPut("name")]

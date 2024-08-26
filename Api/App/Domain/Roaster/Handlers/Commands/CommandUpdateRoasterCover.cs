@@ -1,3 +1,3 @@
 namespace Api.App.Roaster.Handlers.Commands;
 
-public record CommandUpdateRoasterCover(Guid RoasterId, Guid FileId);
+public record CommandUpdateRoasterCover(Guid RoasterId, Uri ImageUrl, Uri ThumbnailUrl);
