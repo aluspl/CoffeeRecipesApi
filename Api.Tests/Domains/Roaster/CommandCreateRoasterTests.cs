@@ -17,7 +17,6 @@ public class CommandCreateRoasterTests(AppFixture fixture) : IntegrationContext(
         // Assert
         var province = await SeedProvince();
         var city = await SeedCity(province.Id);
-        var founded = DateTime.Now;
         var command = new CommandCreateCoffeeRoaster("Pope Roaster", city.Id);
 
         // Act
@@ -39,7 +38,22 @@ public class CommandCreateRoasterTests(AppFixture fixture) : IntegrationContext(
     }
     
     [Fact]
-    public async Task Should_Not_Add_Roaster_When_City_Not_Exists()
+    public async Task Should_Not_Add_Roaster_When_Name_Already_Exists()
+    {
+        var province = await SeedProvince();
+        var city = await SeedCity(province.Id);
+        var command = new CommandCreateCoffeeRoaster("Pope Roaster", city.Id);
+
+        // Act
+        var tracked = await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(command);
+        var status = tracked.Item1;
+        var result = tracked.Item2;
+        
+        // Act
+        await Assert.ThrowsAsync<BusinessException>(async () => await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(command));
+    }
+    [Fact]
+    public async Task Should_Not_Add_Roaster_When_City_Not_Valid()
     {
         // Assert
         var command = new CommandCreateCoffeeRoaster("Pope Roaster", Guid.NewGuid());
@@ -47,7 +61,6 @@ public class CommandCreateRoasterTests(AppFixture fixture) : IntegrationContext(
         // Act
         await Assert.ThrowsAsync<NotFoundException>(async () => await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(command));
     }
-    
     private async Task<CoffeeRoaster> SeedRoaster(Guid cityId)
     {
         await using var session = Store.LightweightSession();

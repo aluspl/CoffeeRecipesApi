@@ -1,9 +1,7 @@
 using Api.App.Common.Exceptions;
 using Api.App.Domain.Map.Entities;
 using Api.App.Domain.Roaster.Entities;
-using Api.App.Domain.Roaster.Extensions;
 using Api.App.Domain.Roaster.Handlers.Commands;
-using Api.App.Domain.Roaster.Models;
 using Api.App.Domain.Roaster.Models.Records;
 using Api.App.Roaster.Handlers.Commands;
 using Marten;
@@ -20,6 +18,7 @@ public class CommandUpdateCoffeeRoasterHandler
 
         await ValidateAndUpdateCity(command.CityId, session, entity);
 
+        entity.Updated = DateTime.UtcNow;
         session.Store(entity);
         await session.SaveChangesAsync();
         
@@ -36,6 +35,7 @@ public class CommandUpdateCoffeeRoasterHandler
         var entity = await GetCoffeeRoaster(command.Id, session);
 
         entity.Name = command.Name;
+        entity.Updated = DateTime.UtcNow;
         session.Store(entity);
         await session.SaveChangesAsync();
         
@@ -46,6 +46,7 @@ public class CommandUpdateCoffeeRoasterHandler
     {
         var entity = await GetCoffeeRoaster(command.Id, session);
         entity.Urls = command.Urls.Select(p => new Uri(p));
+        entity.Updated = DateTime.UtcNow;
         session.Store(entity);
         await session.SaveChangesAsync();
 
@@ -56,6 +57,7 @@ public class CommandUpdateCoffeeRoasterHandler
     {
         var entity = await GetCoffeeRoaster(command.Id, session);
         entity.Description = command.Description;
+        entity.Updated = DateTime.UtcNow;
         session.Store(entity);
         await session.SaveChangesAsync();
 
@@ -67,6 +69,7 @@ public class CommandUpdateCoffeeRoasterHandler
         var entity = await GetCoffeeRoaster(command.RoasterId, session);
         entity.AddCoverImage(command.ImageUrl);
         entity.AddCoverThumbnail(command.ThumbnailUrl);
+        entity.Updated = DateTime.UtcNow;
         session.Store(entity);
         await session.SaveChangesAsync();
 

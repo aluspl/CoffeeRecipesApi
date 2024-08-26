@@ -11,9 +11,9 @@ namespace Api.App.Domain.Roaster.Handlers;
 public class CommandCreateCoffeeRoasterHandler
 {
     public static async Task<CoffeeRoasterResponse> HandleAsync(CommandCreateCoffeeRoaster command,
-        IDocumentStore store)
+        IDocumentSession session)
     {
-        await using var session = store.LightweightSession();
+        await ValidateName(command.Name, session);
         await ValidateCity(command.CityId, session);
         
         var entity = new CoffeeRoaster()
@@ -25,6 +25,14 @@ public class CommandCreateCoffeeRoasterHandler
         await session.SaveChangesAsync();
 
         return entity.Map();
+    }
+
+    private static async Task ValidateName(string name, IDocumentSession session)
+    {
+        if (await session.Query<CoffeeRoaster>().Where(o => o.Name == name).AnyAsync())
+        {
+            throw new BusinessException("Another Coffee Roaster with selected name already exists");
+        }
     }
 
     private static async Task ValidateCity(Guid cityId, IDocumentSession session)
