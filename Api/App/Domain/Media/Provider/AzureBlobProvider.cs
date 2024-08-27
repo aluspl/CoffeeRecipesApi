@@ -1,8 +1,8 @@
 using Api.App.Common.Configs;
 using Api.App.Common.Exceptions;
 using Api.App.Domain.Media.Enum;
-using Api.App.Media.Interfaces.Provider;
-using Api.App.Media.Utils;
+using Api.App.Domain.Media.Interfaces.Provider;
+using Api.App.Domain.Media.Utils;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.Extensions.Options;

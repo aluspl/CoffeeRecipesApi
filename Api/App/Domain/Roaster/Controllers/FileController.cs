@@ -1,15 +1,15 @@
 ﻿using Api.App.Common.Consts;
 using Api.App.Common.Controller;
 using Api.App.Common.Exceptions;
-using Api.App.Domain.Media.Handlers;
 using Api.App.Domain.Media.Handlers.Commands;
+using Api.App.Domain.Media.Interfaces;
+using Api.App.Domain.Roaster.Handlers.Commands;
 using Api.App.Domain.Roaster.Models;
 using Api.App.Domain.Roaster.Models.Records;
-using Api.App.Roaster.Handlers.Commands;
 using Microsoft.AspNetCore.Mvc;
 using Wolverine;
 
-namespace Api.App.Roaster.Controllers;
+namespace Api.App.Domain.Roaster.Controllers;
 
 [Area("Roasters")]
 [Route("[area]/[controller]")]

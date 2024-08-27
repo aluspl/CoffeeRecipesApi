@@ -36,7 +36,7 @@ public class QueryRoasterTests(AppFixture fixture) : IntegrationContext(fixture)
         roasterResponse.CityId.ShouldBe(city.Id);
         roasterResponse.Name.ShouldBe(roaster.Name);
         roasterResponse.Founded.ShouldBe(roaster.Founded);
-        roasterResponse.Urls.ShouldBe(roaster.Urls);
+        roasterResponse.Urls.All(p => roaster.Urls.Any(o => o.Url == p.Url)).ShouldBeTrue();
         
         var item = await Store.QuerySession().Query<CoffeeRoaster>().FirstOrDefaultAsync();
         item.ShouldNotBeNull();
@@ -70,7 +70,7 @@ public class QueryRoasterTests(AppFixture fixture) : IntegrationContext(fixture)
         roasterResponse.CityId.ShouldBe(city.Id);
         roasterResponse.Name.ShouldBe(roaster.Name);
         roasterResponse.Founded.ShouldBe(roaster.Founded);
-        roasterResponse.Urls.ShouldBe(roaster.Urls);
+        roasterResponse.Urls.All(p => roaster.Urls.Any(o => o.Url == p.Url)).ShouldBeTrue();
         
         var item = await Store.QuerySession().Query<CoffeeRoaster>().FirstOrDefaultAsync();
         item.ShouldNotBeNull();
@@ -104,7 +104,7 @@ public class QueryRoasterTests(AppFixture fixture) : IntegrationContext(fixture)
         roasterResponse.CityId.ShouldBe(city.Id);
         roasterResponse.Name.ShouldBe(roaster.Name);
         roasterResponse.Founded.ShouldBe(roaster.Founded);
-        roasterResponse.Urls.ShouldBe(roaster.Urls);
+        roasterResponse.Urls.All(p => roaster.Urls.Any(o => o.Url == p.Url)).ShouldBeTrue();
         
         var item = await Store.QuerySession().Query<CoffeeRoaster>().FirstOrDefaultAsync();
         item.ShouldNotBeNull();
@@ -134,29 +134,11 @@ public class QueryRoasterTests(AppFixture fixture) : IntegrationContext(fixture)
         result.CityId.ShouldBe(city.Id);
         result.Name.ShouldBe(roaster.Name);
         result.Founded.ShouldBe(roaster.Founded);
-        result.Urls.ShouldBe(roaster.Urls);
+        result.Urls.All(p => roaster.Urls.Any(o => o.Url == p.Url)).ShouldBeTrue();
         
         var item = await Store.QuerySession().Query<CoffeeRoaster>().FirstOrDefaultAsync();
         item.ShouldNotBeNull();
         item.Id.ShouldBe(roaster.Id);
         item.Id.ShouldBe(result.Id);
-    }
-    
-    private async Task<CoffeeRoaster> SeedRoaster(Guid cityId)
-    {
-        await using var session = Store.LightweightSession();
-        var entity = new CoffeeRoaster()
-        {
-            CityId = cityId,
-            Name = "Pope Roaster",
-            Urls = new List<Uri>()
-            {
-                new Uri("https://2137.it"),
-                new Uri("https://vatican.it")
-            }
-        };
-        session.Store(entity);
-        await session.SaveChangesAsync();
-        return entity;
     }
 }

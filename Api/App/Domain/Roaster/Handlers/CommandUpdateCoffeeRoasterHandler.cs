@@ -3,7 +3,6 @@ using Api.App.Domain.Map.Entities;
 using Api.App.Domain.Roaster.Entities;
 using Api.App.Domain.Roaster.Handlers.Commands;
 using Api.App.Domain.Roaster.Models.Records;
-using Api.App.Roaster.Handlers.Commands;
 using Marten;
 using Wolverine.Attributes;
 
@@ -45,8 +44,7 @@ public class CommandUpdateCoffeeRoasterHandler
     public static async Task<CoffeeRoasterUpdated> HandleAsync(CommandUpdateRoasterLinks command, IDocumentSession session)
     {
         var entity = await GetCoffeeRoaster(command.Id, session);
-        entity.Urls = command.Urls.Select(p => new Uri(p));
-        entity.Updated = DateTime.UtcNow;
+        entity.UpdateLinks(command.Urls);
         session.Store(entity);
         await session.SaveChangesAsync();
 
@@ -56,8 +54,7 @@ public class CommandUpdateCoffeeRoasterHandler
     public static async Task<CoffeeRoasterUpdated> HandleAsync(CommandUpdateRoasterDescription command, IDocumentSession session)
     {
         var entity = await GetCoffeeRoaster(command.Id, session);
-        entity.Description = command.Description;
-        entity.Updated = DateTime.UtcNow;
+        entity.UpdateDescription(command.Description, command.Language);
         session.Store(entity);
         await session.SaveChangesAsync();
 

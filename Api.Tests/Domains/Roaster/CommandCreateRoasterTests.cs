@@ -52,6 +52,7 @@ public class CommandCreateRoasterTests(AppFixture fixture) : IntegrationContext(
         // Act
         await Assert.ThrowsAsync<BusinessException>(async () => await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(command));
     }
+    
     [Fact]
     public async Task Should_Not_Add_Roaster_When_City_Not_Valid()
     {
@@ -60,22 +61,5 @@ public class CommandCreateRoasterTests(AppFixture fixture) : IntegrationContext(
 
         // Act
         await Assert.ThrowsAsync<NotFoundException>(async () => await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(command));
-    }
-    private async Task<CoffeeRoaster> SeedRoaster(Guid cityId)
-    {
-        await using var session = Store.LightweightSession();
-        var entity = new CoffeeRoaster()
-        {
-            CityId = cityId,
-            Name = "Pope Roaster",
-            Urls = new List<Uri>()
-            {
-                new Uri("https://2137.it"),
-                new Uri("https://vatican.it")
-            }
-        };
-        session.Store(entity);
-        await session.SaveChangesAsync();
-        return entity;
     }
 }

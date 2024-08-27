@@ -2,8 +2,9 @@ using Api.App.Domain.Media.Enum;
 using Api.App.Domain.Media.Handlers;
 using Api.App.Domain.Media.Handlers.Commands;
 using Api.App.Domain.Media.Handlers.Results;
-using Api.App.Media.Interfaces.Provider;
-using Api.App.Media.Utils;
+using Api.App.Domain.Media.Interfaces;
+using Api.App.Domain.Media.Interfaces.Provider;
+using Api.App.Domain.Media.Utils;
 
 namespace Api.App.Domain.Media.Setter;
 

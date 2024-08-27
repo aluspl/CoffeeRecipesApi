@@ -3,7 +3,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Processing;
 
-namespace Api.App.Media.Utils;
+namespace Api.App.Domain.Media.Utils;
 
 public static class ImageUtils
 {

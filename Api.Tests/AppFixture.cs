@@ -1,6 +1,6 @@
 ﻿using Alba;
 using Api.App.Common.Configs;
-using Api.App.Media.Interfaces.Provider;
+using Api.App.Domain.Media.Interfaces.Provider;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Oakton;

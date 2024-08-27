@@ -1,6 +1,6 @@
 using Api.App.Common.Extensions;
-using Api.App.Domain.Media.Entity;
-using Api.App.Domain.Media.Models;
+using Api.App.Domain.Common.Extensions;
+using Api.App.Domain.Media.Extensions;
 using Api.App.Domain.Roaster.Entities;
 using Api.App.Domain.Roaster.Models;
 
@@ -14,20 +14,9 @@ public static class MapExtensions
         response.CityId = entity.CityId;
         response.Name = entity.Name;
         response.Founded = entity.Founded;
-        response.Urls = entity.Urls;
+        response.Urls = entity.Urls?.Select(p => p.Map());
         response.Description = entity.Description;
         response.Image = entity.Image?.Map();
-        return response;
-    }
-    
-    public static CoverFileResponse Map(this CoverFile entity)
-    {
-        var response = new CoverFileResponse()
-        {
-            Cover = entity.ImageUrl?.ToString(),
-            Thumbnail = entity.ThumbnailUrl?.ToString(),
-        };
-        
         return response;
     }
 }
