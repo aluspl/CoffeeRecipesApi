@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coffeerecipes-api
+  labels:
+    app: coffeerecipes-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coffeerecipes-api
+  template:
+    metadata:
+      labels:
+        app: coffeerecipes-api
+    spec:
+      containers:
+        - name: coffeerecipes-api
+          image: aluspl/coffeerecipesapi:develop
+          ports:
+            - containerPort: 80
+          env:
+            - name: ConnectionStrings__Marten
+              value: connectionString
+            - name: Media__ConnectionStrings
+              value: connectionString
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /readiness
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            limits:
+              memory: "1024Mi"
+              cpu: "500m"
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+
+---
+
+# Service dla aplikacji .NET
+apiVersion: v1
+kind: Service
+metadata:
+  name: coffeerecipes-api
+spec:
+  selector:
+    app: coffeerecipes-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+
+# Ingress dla aplikacji z użyciem Traefik
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: coffeerecipesapi-ingress
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+spec:
+  tls:
+    - hosts:
+        - dev-api-recipes.lifelike.cloud
+      secretName: coffeerecipesapi-tls
+  rules:
+    - host: dev-api-recipes.lifelike.cloud
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: coffeerecipes-api
+                port:
+                  number: 80
