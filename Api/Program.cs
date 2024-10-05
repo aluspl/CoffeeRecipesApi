@@ -49,7 +49,11 @@ try
     app.UseExceptionHandler();
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors(policyBuilder => policyBuilder.AllowAnyOrigin());
+    app.UseCors(policyBuilder => policyBuilder
+        .SetIsOriginAllowed(origin => true) // allow any origin
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials());
     app.UseRouting();
     app.MapControllers();
 
