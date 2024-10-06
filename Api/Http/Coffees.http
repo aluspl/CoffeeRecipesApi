@@ -78,7 +78,8 @@ X-ApiKey: {{ApiKey}}
 
   {
     "Id": "{{CoffeeId}}",
-    "Name": "Test Coffee {{$random.alphanumeric()}}",
+    "Description": "Pl Test Coffee {{$random.alphanumeric()}}",
+    "Lang": "Pl"
   }
 
 > {%

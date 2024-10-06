@@ -15,9 +15,9 @@ public class QueryController(IMessageBus bus) : ApiController
 {
     [HttpGet("all")]
     [ProducesResponseType(typeof(IEnumerable<CoffeeResponse>), 200)]
-    public async Task<ActionResult<IEnumerable<CoffeeResponse>>> GetAllRoasters()
+    public async Task<ActionResult<IEnumerable<CoffeeResponse>>> GetAll()
     {
-        var responses = await bus.InvokeAsync<IEnumerable<CoffeeRoasterResponse>>(new QueryCoffeeList(null, null, false));
+        var responses = await bus.InvokeAsync<IEnumerable<CoffeeResponse>>(new QueryCoffeeList(null, null, false));
         return Ok(responses);
     }
 
