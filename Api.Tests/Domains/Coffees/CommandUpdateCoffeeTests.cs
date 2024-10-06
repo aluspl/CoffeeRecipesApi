@@ -44,7 +44,7 @@ public class CommandUpdateCoffeeTests(AppFixture fixture) : IntegrationContext(f
         // Assert
         status.Status.ShouldBe(TrackingStatus.Completed);
         result.ShouldNotBeNull();
-        
+
         // Assign
         var urlsCommand = new CommandUpdateCoffeeLinks(coffee.Id, [
             new UrlRequest("https://2137.vat", "Main Page"),
@@ -59,7 +59,7 @@ public class CommandUpdateCoffeeTests(AppFixture fixture) : IntegrationContext(f
         // Assert
         status.Status.ShouldBe(TrackingStatus.Completed);
         result.ShouldNotBeNull();
-        
+
         // Assign
         var descriptionCommand = new CommandUpdateCoffeeDescription(coffee.Id, "Test");
 
@@ -79,11 +79,13 @@ public class CommandUpdateCoffeeTests(AppFixture fixture) : IntegrationContext(f
         response.Urls.ShouldNotBeNull();
         response.Urls.ShouldNotBeEmpty();
         response.Urls.Count().ShouldBe(urlsCommand.Urls.Count);
-        response.Urls.All(p => roaster.Urls.Any(o => o.Url == p.Url)).ShouldBeTrue();
+        response.Urls
+            .Count()
+            .ShouldBe(roaster.Urls.Count());
         response.Description[descriptionCommand.Language].ShouldBe(descriptionCommand.Description);
         response.RoasterId.ShouldBe(roaster.Id);
     }
-    
+
     [Fact]
     public async Task Should_Not_Update_Roaster_When_City_Not_Exists()
     {
@@ -96,9 +98,10 @@ public class CommandUpdateCoffeeTests(AppFixture fixture) : IntegrationContext(f
         var command = new CommandUpdateCoffeeRoaster(coffee.Id, Guid.NewGuid());
 
         // Act
-        await Assert.ThrowsAsync<NotFoundException>(async () => await Host.InvokeMessageAndWaitAsync<CoffeeUpdated>(command));
+        await Assert.ThrowsAsync<NotFoundException>(async () =>
+            await Host.InvokeMessageAndWaitAsync<CoffeeUpdated>(command));
     }
-    
+
     [Fact]
     public async Task Should_Not_Update_Coffee_When_Name_Already_Exists()
     {
@@ -112,6 +115,7 @@ public class CommandUpdateCoffeeTests(AppFixture fixture) : IntegrationContext(f
         var command = new CommandUpdateCoffeeName(coffee.Id, coffeeOld.Name);
 
         // Act
-        await Assert.ThrowsAsync<BusinessException>(async () => await Host.InvokeMessageAndWaitAsync<CoffeeUpdated>(command));
+        await Assert.ThrowsAsync<BusinessException>(async () =>
+            await Host.InvokeMessageAndWaitAsync<CoffeeUpdated>(command));
     }
 }

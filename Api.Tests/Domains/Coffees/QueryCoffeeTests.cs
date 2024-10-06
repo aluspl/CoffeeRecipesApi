@@ -11,7 +11,7 @@ namespace Api.Tests.Domains.Coffees;
 public class QueryCoffeeTests(AppFixture fixture) : IntegrationContext(fixture)
 {
     [Fact]
-    public async Task Should_Query_All_Roasters()
+    public async Task Should_Query_All_Coffees()
     {
         // Assert
         var province = await SeedProvince();
@@ -45,7 +45,7 @@ public class QueryCoffeeTests(AppFixture fixture) : IntegrationContext(fixture)
     }
 
     [Fact]
-    public async Task Should_Query_Roasters_By_City()
+    public async Task Should_Query_Coffees_By_RoasterId()
     {
         // Assert
         var province = await SeedProvince();
@@ -79,7 +79,7 @@ public class QueryCoffeeTests(AppFixture fixture) : IntegrationContext(fixture)
     }
     
     [Fact]
-    public async Task Should_Query_Roasters_By_Name()
+    public async Task Should_Query_Coffee_By_Name()
     {
         // Assert
         var province = await SeedProvince();
@@ -113,7 +113,7 @@ public class QueryCoffeeTests(AppFixture fixture) : IntegrationContext(fixture)
     }
     
     [Fact]
-    public async Task Should_Query_Roaster_Detail()
+    public async Task Should_Query_Coffee_Detail()
     {
         // Assert
         var province = await SeedProvince();

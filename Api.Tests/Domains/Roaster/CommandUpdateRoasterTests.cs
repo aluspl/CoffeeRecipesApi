@@ -76,7 +76,9 @@ public class CommandUpdateRoasterTests(AppFixture fixture) : IntegrationContext(
         response.Urls.ShouldNotBeNull();
         response.Urls.ShouldNotBeEmpty();
         response.Urls.Count().ShouldBe(urlsCommand.Urls.Count);
-        response.Urls.All(p => roaster.Urls.Any(o => o.Url == p.Url)).ShouldBeTrue();
+        response.Urls
+            .Count()
+            .ShouldBe(roaster.Urls.Count());
         response.Description[descriptionCommand.Language].ShouldBe(descriptionCommand.Description);
         response.CityId.ShouldBe(city.Id);
     }

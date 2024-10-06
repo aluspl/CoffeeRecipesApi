@@ -7,4 +7,6 @@ public class CityResponse : BaseResponse
     public string Name { get; set; }
 
     public Guid? ProvinceId { get; set; }
+
+    public int RoastersCount { get; set; }
 }
