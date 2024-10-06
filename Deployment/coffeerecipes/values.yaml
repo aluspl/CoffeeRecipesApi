@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: coffeerecipes-api
+  labels:
+    app: coffeerecipes-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: coffeerecipes-api
+  template:
+    metadata:
+      labels:
+        app: coffeerecipes-api
+    spec:
+      containers:
+        - name: coffeerecipes-api
+          image: aluspl/coffeerecipesapi:develop
+          ports:
+            - containerPort: 80
+          env:
+            - name: ConnectionStrings__Marten
+              value: "Host=aluspl.synology.me;Port=6432;Database=coffeerecipes;Username=postgres;Password=secret#;"
+            - name: Media__ConnectionStrings
+              value: "secret"
+            - name: ASPNETCORE_URLS
+              value: "http://*:80"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            limits:
+              memory: "1024Mi"
+              cpu: "500m"
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+
+---
+
+# Service dla aplikacji .NET
+apiVersion: v1
+kind: Service
+metadata:
+  name: coffeerecipes-api-service
+spec:
+  selector:
+    app: coffeerecipes-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      name: "http"
+---
+
+# Ingress dla aplikacji z użyciem Traefik
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: coffeerecipes-api-ingress
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+spec:
+  rules:
+    - host: dev-api-recipes.lifelike.cloud # address to endpoint here 
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: coffeerecipes-api-service
+                port:
+                  number: 80
