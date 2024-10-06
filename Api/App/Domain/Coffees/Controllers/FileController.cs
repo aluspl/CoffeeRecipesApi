@@ -11,7 +11,7 @@ using Wolverine;
 
 namespace Api.App.Domain.Coffees.Controllers;
 
-[Area("Roasters")]
+[Area("Coffee")]
 [Route("[area]/[controller]")]
 public class FileController(IMessageBus bus, IFileSetter fileSetter) : ApiKeyController
 {
