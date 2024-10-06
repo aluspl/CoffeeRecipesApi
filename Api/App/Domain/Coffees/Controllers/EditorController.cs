@@ -43,7 +43,7 @@ public class EditorController(IMessageBus bus) : ApiKeyController
     
     [HttpPut("links")]
     [ProducesResponseType(typeof(CoffeeUpdated), 200)]
-    public async Task<ActionResult<CoffeeUpdated>> UpdateLinks([FromBody] UpdateCoffeeLinksRequest request)
+    public async Task<ActionResult<CoffeeUpdated>> UpdateLinks([FromBody] UpdateCoffeeLinkRequest request)
     {
         var responses = await bus.InvokeAsync<CoffeeUpdated>(new CommandUpdateCoffeeLinks(request.Id, request.Urls));
         return Ok(responses);
@@ -51,9 +51,9 @@ public class EditorController(IMessageBus bus) : ApiKeyController
     
     [HttpPut("description")]
     [ProducesResponseType(typeof(CoffeeUpdated), 200)]
-    public async Task<ActionResult<CoffeeUpdated>> UpdateDescription([FromBody] UpdateCoffeeNameRequest request)
+    public async Task<ActionResult<CoffeeUpdated>> UpdateDescription([FromBody] UpdateCoffeeDescriptionRequest request)
     {
-        var responses = await bus.InvokeAsync<CoffeeUpdated>(new CommandUpdateCoffeeDescription(request.Id, request.Name));
+        var responses = await bus.InvokeAsync<CoffeeUpdated>(new CommandUpdateCoffeeDescription(request.Id, request.Description, request.Lang));
         return Ok(responses);
     }
 }
