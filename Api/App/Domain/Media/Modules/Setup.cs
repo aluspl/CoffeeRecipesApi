@@ -1,7 +1,8 @@
 ﻿using Api.App.Domain.Media.Handlers;
+using Api.App.Domain.Media.Interfaces;
+using Api.App.Domain.Media.Interfaces.Provider;
 using Api.App.Domain.Media.Provider;
 using Api.App.Domain.Media.Setter;
-using Api.App.Media.Interfaces.Provider;
 
 namespace Api.App.Domain.Media.Modules;
 

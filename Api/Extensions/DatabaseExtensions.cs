@@ -1,6 +1,7 @@
 ﻿using Api.App.Common.Configs;
 using Api.App.Common.Consts;
 using Api.App.Common.Extensions;
+using Api.App.Domain.Coffees.Entities;
 using Api.App.Domain.Map.Entities;
 using Api.App.Domain.Roaster.Entities;
 using Api.App.Infrastructure.Database.Entities;
@@ -35,6 +36,8 @@ public static class DatabaseExtensions
                 opts.RegisterDocumentType<City>();
                 opts.RegisterDocumentType<Province>();
                 opts.RegisterDocumentType<CoffeeRoaster>();
+                opts.RegisterDocumentType<Coffee>();
+
                 if (!string.IsNullOrEmpty(settings.SchemaName))
                 {
                     opts.Events.DatabaseSchemaName = settings.SchemaName;

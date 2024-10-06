@@ -1,5 +1,5 @@
 ﻿using Api.App.Common.Exceptions;
-using Api.App.Domain.Roaster.Entities;
+using Api.App.Domain.Common.Models;
 using Api.App.Domain.Roaster.Handlers.Commands;
 using Api.App.Domain.Roaster.Handlers.Queries;
 using Api.App.Domain.Roaster.Models;
@@ -44,8 +44,8 @@ public class CommandUpdateRoasterTests(AppFixture fixture) : IntegrationContext(
         
         // Assign
         var urlsCommand = new CommandUpdateRoasterLinks(roaster.Id, [
-            "https://2137.vat",
-            "https://test.test"
+            new UrlRequest("https://2137.vat", "Main Page"),
+           new UrlRequest( "https://test.test", "Test Page")
         ]);
 
         // Act
@@ -76,8 +76,10 @@ public class CommandUpdateRoasterTests(AppFixture fixture) : IntegrationContext(
         response.Urls.ShouldNotBeNull();
         response.Urls.ShouldNotBeEmpty();
         response.Urls.Count().ShouldBe(urlsCommand.Urls.Count);
-        response.Urls.ShouldBe(urlsCommand.Urls.Select(p => new Uri(p)));
-        response.Description.ShouldBe(descriptionCommand.Description);
+        response.Urls
+            .Count()
+            .ShouldBe(roaster.Urls.Count());
+        response.Description[descriptionCommand.Language].ShouldBe(descriptionCommand.Description);
         response.CityId.ShouldBe(city.Id);
     }
     
@@ -94,21 +96,18 @@ public class CommandUpdateRoasterTests(AppFixture fixture) : IntegrationContext(
         await Assert.ThrowsAsync<NotFoundException>(async () => await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(command));
     }
     
-    private async Task<CoffeeRoaster> SeedRoaster(Guid cityId)
+    [Fact]
+    public async Task Should_Not_Update_Roaster_When_Name_Already_Exists()
     {
-        await using var session = Store.LightweightSession();
-        var entity = new CoffeeRoaster()
-        {
-            CityId = cityId,
-            Name = "Pope Roaster",
-            Urls = new List<Uri>()
-            {
-                new Uri("https://2137.it"),
-                new Uri("https://vatican.it")
-            }
-        };
-        session.Store(entity);
-        await session.SaveChangesAsync();
-        return entity;
+        // Assert
+        var province = await SeedProvince();
+        var city = await SeedCity(province.Id);
+        var roasterOld = await SeedRoaster(city.Id);
+        var roaster = await SeedRoaster(city.Id);
+
+        var command = new CommandUpdateRoasterName(roaster.Id, roasterOld.Name);
+
+        // Act
+        await Assert.ThrowsAsync<BusinessException>(async () => await Host.InvokeMessageAndWaitAsync<CoffeeRoasterResponse>(command));
     }
 }

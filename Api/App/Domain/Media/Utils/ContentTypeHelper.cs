@@ -1,4 +1,4 @@
-namespace Api.App.Media.Utils;
+namespace Api.App.Domain.Media.Utils;
 
 public class ContentTypeHelper
 {
@@ -40,7 +40,7 @@ public class ContentTypeHelper
             throw new ArgumentException("File name cannot be null or whitespace.", nameof(fileName));
         }
 
-        var extension = System.IO.Path.GetExtension(fileName);
+        var extension = Path.GetExtension(fileName);
 
         return MimeMappings.GetValueOrDefault(extension, "application/octet-stream");
     }

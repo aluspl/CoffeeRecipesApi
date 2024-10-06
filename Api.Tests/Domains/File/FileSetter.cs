@@ -1,6 +1,7 @@
 using Api.App.Common.Exceptions;
 using Api.App.Domain.Media.Handlers;
 using Api.App.Domain.Media.Handlers.Commands;
+using Api.App.Domain.Media.Interfaces;
 using Shouldly;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;

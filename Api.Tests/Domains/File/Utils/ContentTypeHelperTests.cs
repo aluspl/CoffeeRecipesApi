@@ -1,4 +1,4 @@
-using Api.App.Media.Utils;
+using Api.App.Domain.Media.Utils;
 
 namespace Api.Tests.Domains.File.Utils;
 

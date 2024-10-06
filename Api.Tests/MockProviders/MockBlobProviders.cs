@@ -1,5 +1,5 @@
 using Api.App.Domain.Media.Enum;
-using Api.App.Media.Interfaces.Provider;
+using Api.App.Domain.Media.Interfaces.Provider;
 
 namespace Api.Tests.MockProviders;
 
