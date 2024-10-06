@@ -20,24 +20,24 @@ public class QueryController(IMessageBus bus) : ApiController
     }
 
     [HttpGet("city/{cityId:guid}")]
-    [ProducesResponseType(typeof(IEnumerable<CityResponse>), 200)]
-    public async Task<ActionResult<IEnumerable<CityResponse>>> GetRoastersByCity(Guid cityId)
+    [ProducesResponseType(typeof(IEnumerable<CoffeeRoasterResponse>), 200)]
+    public async Task<ActionResult<IEnumerable<CoffeeRoasterResponse>>> GetRoastersByCity(Guid cityId)
     {
         var responses = await bus.InvokeAsync<IEnumerable<CoffeeRoasterResponse>>(new QueryRoasterList(cityId, null, false));
         return Ok(responses);
     }
     
     [HttpGet("search/{name}")]
-    [ProducesResponseType(typeof(IEnumerable<CityResponse>), 200)]
-    public async Task<ActionResult<IEnumerable<CityResponse>>> GetRoastersByName(string name)
+    [ProducesResponseType(typeof(IEnumerable<CoffeeRoasterResponse>), 200)]
+    public async Task<ActionResult<IEnumerable<CoffeeRoasterResponse>>> GetRoastersByName(string name)
     {
         var responses = await bus.InvokeAsync<IEnumerable<CoffeeRoasterResponse>>(new QueryRoasterList(null, name, false));
         return Ok(responses);
     }
     
     [HttpGet("details/{roasterId:guid}")]
-    [ProducesResponseType(typeof(IEnumerable<CityResponse>), 200)]
-    public async Task<ActionResult<IEnumerable<CityResponse>>> GetDetailsOfRoaster(Guid roasterId)
+    [ProducesResponseType(typeof(IEnumerable<CoffeeRoasterResponse>), 200)]
+    public async Task<ActionResult<IEnumerable<CoffeeRoasterResponse>>> GetDetailsOfRoaster(Guid roasterId)
     {
         if (roasterId == Guid.Empty)
         {
