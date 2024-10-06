@@ -32,7 +32,4 @@
   <ItemGroup>
     <InternalsVisibleTo Include="Api.Tests" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Internal\" />
-  </ItemGroup>
 </Project>

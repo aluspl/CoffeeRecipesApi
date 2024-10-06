@@ -1,10 +1,8 @@
-using Api.App.Domain.Common.Models;
-
 namespace Api.App.Domain.Coffees.Models.Request;
 
-public class UpdateCoffeeLinksRequest
+public class UpdateCoffeeNameRequest
 {
     public Guid Id { get; set; }
 
-    public List<UrlRequest> Urls { get; set; }
+    public string Name { get; set; }
 }

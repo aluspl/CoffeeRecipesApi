@@ -1,0 +1,127 @@
+@CoffeeRecipes_HostAddress = {{Host}}
+### Get All Coffee
+GET {{CoffeeRecipes_HostAddress}}/Coffee/Query/all
+Accept: application/json
+Content-Type: application/json
+### Get Coffees by Roaster
+GET {{CoffeeRecipes_HostAddress}}/Coffee/Query/Roaster/{{RoasterId}}
+Accept: application/json
+Content-Type: application/json
+
+### Get Details
+GET {{CoffeeRecipes_HostAddress}}/Coffee/Query/details/{{CoffeeId}}
+Accept: application/json
+Content-Type: application/json
+
+### Add Coffee
+POST {{CoffeeRecipes_HostAddress}}/Coffee/Editor
+Accept: application/json
+Content-Type: application/json
+X-ApiKey: {{ApiKey}}
+
+  {
+    "Name": "Test Coffee",
+    "RoasterId": "{{RoasterId}}"
+  }
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.global.set("CoffeeId", response.body.id)
+%}
+
+### Update Roaster Logo
+
+POST {{CoffeeRecipes_HostAddress}}/Coffee/File/{{RoasterId}}
+Accept: image/png
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+X-ApiKey: {{ApiKey}}
+
+--WebAppBoundary
+Content-Disposition: form-data; name="data"; filename="image.png"
+Content-Type: application/json
+
+< ./image.png
+--WebAppBoundary--
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+
+### Update Roaster Name
+PUT {{CoffeeRecipes_HostAddress}}/Coffee/Editor/Name
+Accept: application/json
+Content-Type: application/json
+X-ApiKey: {{ApiKey}}
+
+  {
+    "Id": "{{CoffeeId}}",
+    "Name": "Test Roaster {{$random.alphanumeric()}}",
+  }
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### Update Coffee Description
+PUT {{CoffeeRecipes_HostAddress}}/Coffee/Editor/description
+Accept: application/json
+Content-Type: application/json
+X-ApiKey: {{ApiKey}}
+
+  {
+    "Id": "{{CoffeeId}}",
+    "Name": "Test Coffee {{$random.alphanumeric()}}",
+  }
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### Update Coffee Links
+PUT {{CoffeeRecipes_HostAddress}}/Coffee/Editor/links
+Accept: application/json
+Content-Type: application/json
+X-ApiKey: {{ApiKey}}
+
+  {
+    "Id": "{{CoffeeId}}",
+    "Urls": [
+      {
+        "Name": "Main",
+        "Url": "https://test.com"
+      }
+    ],
+  }
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+### Update Coffee Roasters
+PUT {{CoffeeRecipes_HostAddress}}/Coffee/Editor/Roaster
+Accept: application/json
+Content-Type: application/json
+X-ApiKey: {{ApiKey}}
+
+  {
+    "Id": "{{CoffeeId}}",
+    "RoasterId": "{{RoasterId}}"
+  }
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
