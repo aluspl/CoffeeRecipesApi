@@ -1,6 +1,9 @@
 ﻿using Api.App.Common.Consts;
 using Api.App.Common.Controller;
 using Api.App.Common.Exceptions;
+using Api.App.Domain.Coffees.Handlers.Commands;
+using Api.App.Domain.Coffees.Models;
+using Api.App.Domain.Coffees.Models.Records;
 using Api.App.Domain.Media.Handlers.Commands;
 using Api.App.Domain.Media.Interfaces;
 using Api.App.Domain.Roaster.Handlers.Commands;
@@ -16,8 +19,8 @@ namespace Api.App.Domain.Coffees.Controllers;
 public class FileController(IMessageBus bus, IFileSetter fileSetter) : ApiKeyController
 {
     [HttpPost("{roasterId:guid}")]
-    [ProducesResponseType(typeof(CoffeeRoasterResponse), 200)]
-    public async Task<ActionResult<CoffeeRoasterResponse>> UploadFile(Guid roasterId)
+    [ProducesResponseType(typeof(CoffeeResponse), 200)]
+    public async Task<ActionResult<CoffeeResponse>> UploadFile(Guid roasterId)
     {
         using var stream = new MemoryStream();
         var file = GetFile();
@@ -25,7 +28,7 @@ public class FileController(IMessageBus bus, IFileSetter fileSetter) : ApiKeyCon
         await file.CopyToAsync(stream);
 
         var result = await fileSetter.Upload(new UploadFileModel(roasterId, extensions, stream));
-        var response = await bus.InvokeAsync<CoffeeRoasterUpdated>(new CommandUpdateRoasterCover(roasterId, result.ImageUrl, result.ThumbnailUrl));
+        var response = await bus.InvokeAsync<CoffeeResponse>(new CommandUpdateCoffeeCover(roasterId, result.ImageUrl, result.ThumbnailUrl));
         return Ok(response);
     }
 
