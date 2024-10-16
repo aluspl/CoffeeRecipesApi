@@ -21,18 +21,17 @@ spec:
           ports:
             - containerPort: {{ .Values.service.port }}
           env:
-            - name: ConnectionStrings__Marten
+            {{- range .Values.env }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+            {{- range .Values.secrets.values }}
+            - name: {{ .name }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secrets.martenSecretName }}
-                  key: connectionString
-            - name: Media__ConnectionStrings
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secrets.mediaSecretName }}
-                  key: connectionString
-            - name: ASPNETCORE_URLS
-              value: {{ .Values.env[0].value }}
+                  name: {{ $.Values.secrets.secretName }}
+                  key: {{ .key }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
