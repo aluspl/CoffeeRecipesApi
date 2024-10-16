@@ -73,6 +73,7 @@ jobs:
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config  # Ustaw uprawnienia na odczyt tylko dla właściciela
 
       - name: Install Helm
         uses: azure/setup-helm@v3
@@ -85,4 +86,6 @@ jobs:
             --set image.repository=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }} \
             --set image.tag=${{ steps.vars.outputs.COMMIT_SHORT_SHA }} \
             --namespace api \
-            --set image.pullPolicy=Always
+            --set image.pullPolicy=Always \
+            --kubeconfig $HOME/.kube/config \
+            --set-string "tls.insecure=true"  # Użyj, gdy chcesz zignorować certyfikaty
