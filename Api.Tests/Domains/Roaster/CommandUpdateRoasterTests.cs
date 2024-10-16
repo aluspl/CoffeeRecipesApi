@@ -16,8 +16,7 @@ public class CommandUpdateRoasterTests(AppFixture fixture) : IntegrationContext(
     public async Task Should_Update_Roaster()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity("Slask");
         var roaster = await SeedRoaster(city.Id);
         var cityCommand = new CommandUpdateRoasterCity(roaster.Id, city.Id);
 
@@ -87,8 +86,7 @@ public class CommandUpdateRoasterTests(AppFixture fixture) : IntegrationContext(
     public async Task Should_Not_Update_Roaster_When_City_Not_Exists()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity("Slask");
         var roaster = await SeedRoaster(city.Id);
         var command = new CommandUpdateRoasterCity(roaster.Id, Guid.NewGuid());
 
@@ -100,8 +98,7 @@ public class CommandUpdateRoasterTests(AppFixture fixture) : IntegrationContext(
     public async Task Should_Not_Update_Roaster_When_Name_Already_Exists()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity("Slask");
         var roasterOld = await SeedRoaster(city.Id);
         var roaster = await SeedRoaster(city.Id);
 

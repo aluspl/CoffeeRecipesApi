@@ -1,0 +1,42 @@
+# values.yaml
+replicaCount: 1
+
+image:
+  repository: aluspl/coffeerecipesapi
+  tag: develop
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+  hosts:
+    - host: dev-api-recipes.lifelike.cloud
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: lifelike-cloud-tls
+      hosts:
+        - dev-api-recipes.lifelike.cloud
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 2024Mi
+  requests:
+    cpu: 500m
+    memory: 1024Mi
+
+secrets:
+  martenSecretName: "marten-secret"    # Secret for ConnectionStrings__Marten
+  mediaSecretName: "media-secret"      # Secret for Media__ConnectionStrings
+
+env:
+  - name: ASPNETCORE_URLS
+    value: "http://*:80"

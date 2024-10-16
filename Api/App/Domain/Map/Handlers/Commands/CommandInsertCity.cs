@@ -1,3 +1,5 @@
-﻿namespace Api.App.Domain.Map.Handlers.Commands;
+﻿using Api.App.Common.Enums;
 
-public record CommandInsertCity(string Name, Guid ProvinceId);
+namespace Api.App.Domain.Map.Handlers.Commands;
+
+public record CommandInsertCity(string Name, string Province, CountryCodes Country);

@@ -34,7 +34,6 @@ public static class DatabaseExtensions
                 opts.UseSystemTextJsonForSerialization(EnumStorage.AsString);
     
                 opts.RegisterDocumentType<City>();
-                opts.RegisterDocumentType<Province>();
                 opts.RegisterDocumentType<CoffeeRoaster>();
                 opts.RegisterDocumentType<Coffee>();
 

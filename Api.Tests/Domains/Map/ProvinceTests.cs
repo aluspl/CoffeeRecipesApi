@@ -18,8 +18,8 @@ public class ProvinceTests(AppFixture fixture) : IntegrationContext(fixture)
     public async Task Should_Query_For_Provinces_return_provinces_with_City()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity("Slask");
+
         var query = new QueryProvinceList();
 
         // Act
@@ -35,13 +35,7 @@ public class ProvinceTests(AppFixture fixture) : IntegrationContext(fixture)
         
         var provinceResponse = result.FirstOrDefault();
         provinceResponse.ShouldNotBeNull();
-        provinceResponse.Id.ShouldBe(province.Id);
         provinceResponse.Cities.ShouldNotBeNull();
         provinceResponse.Cities.ShouldNotBeEmpty();
-
-        var item = await Store.QuerySession().Query<Province>().FirstOrDefaultAsync();
-        item.ShouldNotBeNull();
-        item.Id.ShouldBe(province.Id);
-        item.Id.ShouldBe(provinceResponse.Id);
     }
 }

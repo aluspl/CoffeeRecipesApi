@@ -22,16 +22,16 @@ public class CityController(IMessageBus bus) : ApiController
         return Ok(cities);
     }
 
-    [HttpGet("{provinceId:guid}")]
+    [HttpGet("{province}")]
     [ProducesResponseType(typeof(IEnumerable<CityResponse>), 200)]
-    public async Task<ActionResult<IEnumerable<CityResponse>>> GetCitiesByProvinceId(Guid provinceId)
+    public async Task<ActionResult<IEnumerable<CityResponse>>> GetCitiesByProvinceId(string province)
     {
-        if (provinceId == Guid.Empty)
+        if (province.IsNullOrEmpty())
         {
-            return BadRequest("Invalid province ID");
+            return BadRequest("Missing province name");
         }
 
-        var cities = await bus.InvokeAsync<IEnumerable<CityResponse>>(new QueryCityListByProvinceId(provinceId));
+        var cities = await bus.InvokeAsync<IEnumerable<CityResponse>>(new QueryCityListByProvinceName(province));
         return Ok(cities);
     }
     
@@ -53,12 +53,12 @@ public class CityController(IMessageBus bus) : ApiController
     [ApiKey]
     public async Task<ActionResult<CityResponse>> Insert(CityRequest city)
     {
-        if (city.ProvinceId == Guid.Empty)
+        if (city.Province.IsNullOrEmpty())
         {
-            return BadRequest("Invalid province ID");
+            return BadRequest("Missing province");
         }
 
-        var response = await bus.InvokeAsync<CityResponse>(new CommandInsertCity(city.Name, city.ProvinceId));
+        var response = await bus.InvokeAsync<CityResponse>(new CommandInsertCity(city.Name, city.Province, city.Country));
         return Ok(response);
     }
 }

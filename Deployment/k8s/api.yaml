@@ -17,13 +17,14 @@ spec:
       containers:
         - name: coffeerecipes-api
           image: aluspl/coffeerecipesapi:develop
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
           env:
             - name: ConnectionStrings__Marten
-              value: "Host=aluspl.synology.me;Port=6432;Database=coffeerecipes;Username=postgres;Password=secret#;"
+              value: "Host=ip;Port=6432;Database=coffeerecipes;Username=postgres;Password=password#;"
             - name: Media__ConnectionStrings
-              value: "secret"
+              value: "blobStorageConnectionString"
             - name: ASPNETCORE_URLS
               value: "http://*:80"
           livenessProbe:
@@ -34,11 +35,11 @@ spec:
             periodSeconds: 10
           resources:
             limits:
-              memory: "1024Mi"
+              memory: "2024Mi"
               cpu: "500m"
             requests:
-              memory: "512Mi"
-              cpu: "250m"
+              memory: "1024Mi"
+              cpu: "500m"
 
 ---
 
@@ -63,10 +64,15 @@ kind: Ingress
 metadata:
   name: coffeerecipes-api-ingress
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
 spec:
+  tls:
+    - hosts:
+        - dev-api-recipes.lifelike.cloud
+      secretName: lifelike-cloud-tls
   rules:
-    - host: dev-api-recipes.lifelike.cloud # address to endpoint here 
+    - host: dev-api-recipes.lifelike.cloud
       http:
         paths:
           - path: /

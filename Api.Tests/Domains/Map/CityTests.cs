@@ -1,4 +1,5 @@
-﻿using Api.App.Domain.Map.Entities;
+﻿using Api.App.Common.Enums;
+using Api.App.Domain.Map.Entities;
 using Api.App.Domain.Map.Handlers.Commands;
 using Api.App.Domain.Map.Handlers.Queries;
 using Api.App.Domain.Map.Models.Responses;
@@ -17,8 +18,7 @@ public class CityTests(AppFixture fixture) : IntegrationContext(fixture)
     [Fact]
     public async Task Should_Add_City_To_Selected_Province()
     {
-        var province = await SeedProvince();
-        var command = new CommandInsertCity(ProvinceConsts.SampleCity.Name, province.Id);
+        var command = new CommandInsertCity(ProvinceConsts.SampleCity.Name, ProvinceConsts.ProvinceName, CountryCodes.PL);
 
         var tracked = await Host.InvokeMessageAndWaitAsync(command);
         var result = tracked.FindSingleTrackedMessageOfType<CityResponse>();
@@ -35,9 +35,8 @@ public class CityTests(AppFixture fixture) : IntegrationContext(fixture)
     public async Task Should_Query_For_City_By_ProvinceId()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
-        var query = new QueryCityListByProvinceId(province.Id);
+        var city = await SeedCity(ProvinceName);
+        var query = new QueryCityListByProvinceName(ProvinceName);
 
         // Act
         var tracked = await Host.InvokeMessageAndWaitAsync<IEnumerable<CityResponse>>(query);
@@ -52,7 +51,7 @@ public class CityTests(AppFixture fixture) : IntegrationContext(fixture)
         
         var cityResponse = result.FirstOrDefault();
         cityResponse.ShouldNotBeNull();
-        cityResponse.ProvinceId.ShouldBe(province.Id);
+        cityResponse.Province.ShouldBe(ProvinceConsts.ProvinceName);
         cityResponse.Id.ShouldBe(city.Id);
         cityResponse.Name.ShouldBe(city.Name);
         
@@ -68,8 +67,7 @@ public class CityTests(AppFixture fixture) : IntegrationContext(fixture)
     public async Task Should_Query_For_City_by_Name()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity(ProvinceConsts.ProvinceName);
         var query = new QueryCityListByName(city.Name);
 
         // Act
@@ -85,7 +83,7 @@ public class CityTests(AppFixture fixture) : IntegrationContext(fixture)
         
         var cityResponse = result.FirstOrDefault();
         cityResponse.ShouldNotBeNull();
-        cityResponse.ProvinceId.ShouldBe(province.Id);
+        cityResponse.Province.ShouldBe(ProvinceConsts.ProvinceName);
         cityResponse.Id.ShouldBe(city.Id);
         cityResponse.Name.ShouldBe(city.Name);
         

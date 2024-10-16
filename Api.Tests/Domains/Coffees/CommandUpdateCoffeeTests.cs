@@ -18,8 +18,8 @@ public class CommandUpdateCoffeeTests(AppFixture fixture) : IntegrationContext(f
     public async Task Should_Update_Coffee()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity();
+
         var roaster = await SeedRoaster(city.Id);
         var coffee = await SeedCoffee(roaster.Id);
         var commandUpdateCoffeeRoaster = new CommandUpdateCoffeeRoaster(coffee.Id, roaster.Id);
@@ -90,8 +90,8 @@ public class CommandUpdateCoffeeTests(AppFixture fixture) : IntegrationContext(f
     public async Task Should_Not_Update_Roaster_When_City_Not_Exists()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity();
+
         var roaster = await SeedRoaster(city.Id);
         var coffee = await SeedCoffee(roaster.Id, "coffee 1");
 
@@ -106,8 +106,8 @@ public class CommandUpdateCoffeeTests(AppFixture fixture) : IntegrationContext(f
     public async Task Should_Not_Update_Coffee_When_Name_Already_Exists()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity();
+
         var roaster = await SeedRoaster(city.Id);
         var coffeeOld = await SeedCoffee(roaster.Id, "coffee 1");
         var coffee = await SeedCoffee(roaster.Id, "coffee 1");
