@@ -1,4 +1,4 @@
-name: Publish and Deploy Docker Image and Use Helm
+name: Publish and Deploy and Use Helm
 
 on:
   push:
@@ -64,13 +64,15 @@ jobs:
           DIGEST: ${{ steps.build-and-push.outputs.digest }}
         run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
 
-      - name: Set kubeconfig for K3s
-        run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-
       - name: Install kubectl
         uses: azure/setup-kubectl@v3
         with:
           version: 'v1.21.0'  # wersja kubectl zgodna z K3s
+
+      - name: Set kubeconfig for K3s
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
       - name: Install Helm
         uses: azure/setup-helm@v3
