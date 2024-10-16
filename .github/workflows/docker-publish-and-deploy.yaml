@@ -1,4 +1,4 @@
-name: Publish and Deploy Docker Image
+name: Publish and Deploy Docker Image and Use Helm
 
 on:
   push:
