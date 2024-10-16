@@ -15,8 +15,7 @@ public class CommandCreateRoasterTests(AppFixture fixture) : IntegrationContext(
     public async Task Should_Add_Roaster()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity("Slask");
         var command = new CommandCreateCoffeeRoaster("Pope Roaster", city.Id);
 
         // Act
@@ -40,8 +39,7 @@ public class CommandCreateRoasterTests(AppFixture fixture) : IntegrationContext(
     [Fact]
     public async Task Should_Not_Add_Roaster_When_Name_Already_Exists()
     {
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity("Slask");
         var command = new CommandCreateCoffeeRoaster("Pope Roaster", city.Id);
 
         // Act

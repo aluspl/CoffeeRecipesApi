@@ -1,4 +1,5 @@
 using Api.App.Common.Consts;
+using Api.App.Common.Enums;
 using Api.App.Domain.Map.Entities;
 using Marten;
 
@@ -19,27 +20,21 @@ public class DatabaseInitializer(IDocumentStore store) : IHostedService
     private async Task PopulateProvincesAndCities()
     {
         await using var session = store.LightweightSession();
-        var count = await session.Query<Province>().CountAsync();
+        var count = await session.Query<City>().CountAsync();
         if (count != 0)
         {
             return;
         }
 
-        foreach (var province in ProvincesConsts.Provinces)
+        foreach (var city in ProvincesConsts.Provinces.SelectMany(province => province.Value.Select(cityName => new City()
+                 {
+                     Name = cityName, 
+                     Province = province.Key,
+                     Country = CountryCodes.PL,
+                     Created = DateTime.UtcNow
+                 })))
         {
-            var provinceEntity = new Province()
-            {
-                Name = province.Key,
-                Created = DateTime.UtcNow,
-            };
-
-            session.Store(provinceEntity);
-
-            foreach (var city in province.Value.Select(cityName => new City()
-                         { Name = cityName, ProvinceId = provinceEntity.Id, Created = DateTime.UtcNow }))
-            {
-                session.Store(city);
-            }
+            session.Store(city);
         }
 
         await session.SaveChangesAsync();

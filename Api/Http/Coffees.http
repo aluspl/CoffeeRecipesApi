@@ -53,7 +53,7 @@ Content-Type: application/json
 %}
 
 
-### Update Roaster Name
+### Update Coffee Name
 PUT {{CoffeeRecipes_HostAddress}}/Coffee/Editor/Name
 Accept: application/json
 Content-Type: application/json
@@ -61,7 +61,7 @@ X-ApiKey: {{ApiKey}}
 
   {
     "Id": "{{CoffeeId}}",
-    "Name": "Test Roaster {{$random.alphanumeric()}}",
+    "Name": "Columbia Peach",
   }
 
 > {%
@@ -78,8 +78,8 @@ X-ApiKey: {{ApiKey}}
 
   {
     "Id": "{{CoffeeId}}",
-    "Description": "Pl Test Coffee {{$random.alphanumeric()}}",
-    "Lang": "Pl"
+    "Description": "Peach as fuck",
+    "Lang": "En"
   }
 
 > {%

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: coffeerecipes-api
+description: A Helm chart for Coffee Recipes API
+version: 2.1.37
+appVersion: "1.0.0"

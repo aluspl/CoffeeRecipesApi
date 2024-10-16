@@ -4,7 +4,7 @@ using Api.App.Domain.Map.Entities;
 
 namespace Api.App.Domain.Map.Models.Responses;
 
-public class ProvinceResponse : BaseResponse
+public class ProvinceResponse
 {
     public string Name { get; set; }
 

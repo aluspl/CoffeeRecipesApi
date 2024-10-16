@@ -1,4 +1,5 @@
-﻿using Api.App.Infrastructure.Database.Entities;
+﻿using Api.App.Common.Enums;
+using Api.App.Infrastructure.Database.Entities;
 
 namespace Api.App.Domain.Map.Entities;
 
@@ -14,5 +15,9 @@ public class City : IEntity
 
     public string Name { get; set; }
 
-    public Guid ProvinceId { get; set; }
+    public string Province { get; set; }
+
+    public CountryCodes Country { get; set; }
+
+    public int RoastersCount { get; set; }
 }

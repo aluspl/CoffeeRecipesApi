@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "coffeerecipes-api.fullname" . }}
+  labels:
+    app: {{ include "coffeerecipes-api.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "coffeerecipes-api.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "coffeerecipes-api.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: ConnectionStrings__Marten
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.martenSecretName }}
+                  key: connectionString
+            - name: Media__ConnectionStrings
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secrets.mediaSecretName }}
+                  key: connectionString
+            - name: ASPNETCORE_URLS
+              value: {{ .Values.env[0].value }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            limits:
+              memory: "{{ .Values.resources.limits.memory }}"
+              cpu: "{{ .Values.resources.limits.cpu }}"
+            requests:
+              memory: "{{ .Values.resources.requests.memory }}"
+              cpu: "{{ .Values.resources.requests.cpu }}"

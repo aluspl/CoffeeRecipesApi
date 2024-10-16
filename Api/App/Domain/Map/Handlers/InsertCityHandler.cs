@@ -12,18 +12,12 @@ public class InsertCityHandler
 {
     public static async Task<CityResponse> HandleAsync(CommandInsertCity command, IDocumentSession session)
     {
-        // Validate if Province exists
-        var province = await session
-                           .Query<Province>()
-                           .Where(p => p.Id == command.ProvinceId)
-                           .FirstOrDefaultAsync()
-                       ?? throw new NotFoundException("Province not found");
- 
         var city = new City()
         {
-            ProvinceId = province.Id,
             Name = command.Name,
             Created = DateTime.UtcNow,
+            Province = command.Province,
+            Country = command.Country,
         };
         
         session.Store(city);

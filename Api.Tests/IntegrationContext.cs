@@ -1,4 +1,5 @@
 ﻿using Alba;
+using Api.App.Common.Enums;
 using Api.App.Domain.Coffees.Entities;
 using Api.App.Domain.Map.Entities;
 using Api.App.Domain.Roaster.Entities;
@@ -33,26 +34,15 @@ public abstract class IntegrationContext : IAsyncLifetime
     {
         return Task.CompletedTask;
     }
-    
-    protected async Task<Province> SeedProvince()
-    {
-        await using var documentSession = Store.LightweightSession();
-        var entity = new Province()
-        {
-            Name = ProvinceConsts.SampleProvince.Name,
-        };
-        
-        documentSession.Store(entity);
-        await documentSession.SaveChangesAsync();
-        return entity;
-    }
-    
-    protected async Task<City> SeedCity(Guid provinceId)
+    protected const string ProvinceName = "Slask";
+
+    protected async Task<City> SeedCity(string provinceName = ProvinceConsts.ProvinceName)
     {
         await using var session = Store.LightweightSession();
         var entity = new City()
         {
-            ProvinceId = provinceId,
+            Country = CountryCodes.PL,
+            Province = provinceName,
             Name = ProvinceConsts.SampleCity.Name,
         };
         session.Store(entity);

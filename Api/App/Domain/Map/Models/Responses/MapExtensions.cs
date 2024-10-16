@@ -8,17 +8,10 @@ public static class MapExtensions
     public static CityResponse Map(this City entity)
     {
         var response = entity.InitResponse<CityResponse>();
-        response.ProvinceId = entity.ProvinceId;
+        response.Province = entity.Province;
+        response.Country = entity.Country;
+        response.RoastersCount = entity.RoastersCount;
         response.Name = entity.Name;
-
-        return response;
-    }
-    
-    public static ProvinceResponse Map(this Province entity, ICollection<CityResponse> cities = null)
-    {
-        var response = entity.InitResponse<ProvinceResponse>();
-        response.Name = entity.Name;
-        response.Cities = cities ?? new List<CityResponse>();
 
         return response;
     }

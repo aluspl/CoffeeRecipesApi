@@ -1,6 +1,7 @@
 ﻿using Api.App.Domain.Coffees.Entities;
 using Api.App.Domain.Coffees.Handlers.Queries;
 using Api.App.Domain.Coffees.Models;
+using Api.Tests.Consts;
 using Marten;
 using Shouldly;
 using Wolverine.Tracking;
@@ -14,8 +15,8 @@ public class QueryCoffeeTests(AppFixture fixture) : IntegrationContext(fixture)
     public async Task Should_Query_All_Coffees()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity();
+
         var roaster = await SeedRoaster(city.Id);
         var coffee = await SeedCoffee(roaster.Id);
 
@@ -48,8 +49,8 @@ public class QueryCoffeeTests(AppFixture fixture) : IntegrationContext(fixture)
     public async Task Should_Query_Coffees_By_RoasterId()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity();
+
         var roaster = await SeedRoaster(city.Id);
         var coffee = await SeedCoffee(roaster.Id);
 
@@ -82,8 +83,7 @@ public class QueryCoffeeTests(AppFixture fixture) : IntegrationContext(fixture)
     public async Task Should_Query_Coffee_By_Name()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity();
         var roaster = await SeedRoaster(city.Id);
         var coffee = await SeedCoffee(roaster.Id);
 
@@ -116,8 +116,7 @@ public class QueryCoffeeTests(AppFixture fixture) : IntegrationContext(fixture)
     public async Task Should_Query_Coffee_Detail()
     {
         // Assert
-        var province = await SeedProvince();
-        var city = await SeedCity(province.Id);
+        var city = await SeedCity();
         var roaster = await SeedRoaster(city.Id);
         var coffee = await SeedCoffee(roaster.Id);
 

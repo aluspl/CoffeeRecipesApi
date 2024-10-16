@@ -11,14 +11,14 @@ namespace Api.App.Domain.Map.Handlers;
 [WolverineHandler]
 public static class QueryCityHandler
 {
-    public static async Task<IEnumerable<CityResponse>> HandleAsync(QueryCityListByProvinceId query,
+    public static async Task<IEnumerable<CityResponse>> HandleAsync(QueryCityListByProvinceName query,
         IDocumentStore store)
     {
         await using var session = store.QuerySession();
 
         var sessionQuery = session
             .Query<City>()
-            .Where(x => x.ProvinceId == query.ProvinceId);
+            .Where(x => x.Province.Contains(query.Province));
 
         var sessions = await sessionQuery.ToListAsync();
         return sessions.Select(MapExtensions.Map);
@@ -28,7 +28,7 @@ public static class QueryCityHandler
     {
         await using var session = store.QuerySession();
 
-        IQueryable<City> sessionQuery = query.Name.IsNullOrEmpty()
+        var sessionQuery = query.Name.IsNullOrEmpty()
             ? session.Query<City>()
             : session.Query<City>().Where(x => x.Name.Contains(query.Name));
 

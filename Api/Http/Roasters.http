@@ -84,7 +84,7 @@ X-ApiKey: {{ApiKey}}
 
   {
     "Id": "{{RoasterId}}",
-    "Name": "Test Roaster {{$random.alphanumeric()}}",
+    "Name": "YoCo",
   }
 
 > {%
