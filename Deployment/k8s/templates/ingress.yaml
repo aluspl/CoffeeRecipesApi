@@ -5,6 +5,7 @@ metadata:
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
     traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: {{ .Values.tls.issuerName }}
 spec:
   tls:
     - hosts:
@@ -20,6 +21,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: coffeerecipes-api-service
+                name: {{ .Values.service.name }}
                 port:
                   number: {{ .Values.service.port }}
