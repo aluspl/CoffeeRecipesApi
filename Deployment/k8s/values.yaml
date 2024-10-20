@@ -16,6 +16,7 @@ secrets:
 
 tls:
   secretName: lifelike-cloud-tls
+  issuerName: lifelike-cloud
 
 replicaCount: 1
 image:
@@ -24,6 +25,7 @@ image:
   pullPolicy: Always
 service:
   port: 80
+  name: coffeerecipes-api-service
 resources:
   limits:
     memory: "2024Mi"
