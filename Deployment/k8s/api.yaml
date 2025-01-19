@@ -22,9 +22,15 @@ spec:
             - containerPort: 80
           env:
             - name: ConnectionStrings__Marten
-              value: "Host=ip;Port=6432;Database=coffeerecipes;Username=postgres;Password=password#;"
+              valueFrom:
+                secretKeyRef:
+                  name: api-secrets
+                  key: ConnectionStrings__Marten
             - name: Media__ConnectionStrings
-              value: "blobStorageConnectionString"
+              valueFrom:
+                secretKeyRef:
+                  name: api-secrets
+                  key: Media__ConnectionStrings
             - name: ASPNETCORE_URLS
               value: "http://*:80"
           livenessProbe:
@@ -35,15 +41,14 @@ spec:
             periodSeconds: 10
           resources:
             limits:
-              memory: "2024Mi"
-              cpu: "500m"
-            requests:
               memory: "1024Mi"
               cpu: "500m"
-
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+ 
 ---
-
-# Service dla aplikacji .NET
+ # Service dla aplikacji .NET
 apiVersion: v1
 kind: Service
 metadata:
@@ -57,16 +62,15 @@ spec:
       targetPort: 80
       name: "http"
 ---
-
 # Ingress dla aplikacji z użyciem Traefik
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: coffeerecipes-api-ingress
   annotations:
-    traefik.ingress.kubernetes.io/router.entrypoints: websecure
-    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/issuer: lifelike-cert
 spec:
+  ingressClassName: nginx
   tls:
     - hosts:
         - dev-api-recipes.lifelike.cloud
